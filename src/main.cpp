@@ -1,12 +1,18 @@
 #include <stdio.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "imgui.h"
 
 int main(int argc, char* argv[]) {
 
 	printf("Heavenly Engine Started...\n");
 
+	//ImGui::ShowDemoWindow();
+
 	if (!glfwInit()) {
+		printf("Could not init glfw. Exiting.");
 		return -1;
 	}
 
