@@ -24,6 +24,11 @@ int main(int argc, char* argv[]) {
 
 	glfwMakeContextCurrent(window);
 
+	if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+		printf("Could not initialize glad. Exiting.");
+		return -1;
+	}
+
 	while (!glfwWindowShouldClose(window)) {
 
 		glClear(GL_COLOR_BUFFER_BIT);
