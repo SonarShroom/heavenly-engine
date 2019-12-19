@@ -5,11 +5,15 @@
 
 #include "imgui.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 
 	printf("Heavenly Engine Started...\n");
 
-	//ImGui::ShowDemoWindow();
+	ImGui::CreateContext();
+	ImGui::ShowDemoWindow();
+
+	return 0;
 
 	if (!glfwInit()) {
 		printf("Could not init glfw. Exiting.");
