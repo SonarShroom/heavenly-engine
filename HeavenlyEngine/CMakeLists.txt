@@ -14,19 +14,28 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(
-	thirdparty/glfw
+    thirdparty/glfw
 )
 
-add_library(${ENGINE_LIB} SHARED
-	${SRC_DIR}/Heavenly.cpp
-	${IMGUI_DIR}/imgui.cpp
-	${IMGUI_DIR}/imgui_draw.cpp
-	${IMGUI_DIR}/imgui_widgets.cpp
-	${IMGUI_DIR}/imgui_demo.cpp
+add_library(${ENGINE_LIB}
+    ${SRC_DIR}/core/private/Heavenly.cpp
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+
+    ${SRC_DIR}/core/Heavenly.h
 )
 
-target_compile_definitions(${ENGINE_LIB} PRIVATE HEAVENLY_BUILD_DLL)
-target_include_directories(${ENGINE_LIB} PRIVATE ${GLAD_DIR}/include)
-target_include_directories(${ENGINE_LIB} PRIVATE ${IMGUI_DIR})
-target_link_libraries(${ENGINE_LIB} glad)
-target_link_libraries(${ENGINE_LIB} glfw)
+target_include_directories(${ENGINE_LIB} PRIVATE
+    ${SRC_DIR}/core
+
+    ${GLAD_DIR}/include
+    ${IMGUI_DIR}
+)
+target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/src/include)
+
+target_link_libraries(${ENGINE_LIB}
+    glad
+    glfw
+)
