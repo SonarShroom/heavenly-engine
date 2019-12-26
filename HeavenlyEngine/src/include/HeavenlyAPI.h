@@ -6,7 +6,9 @@
 #define HEAVENLY_API
 
 namespace Heavenly {
+
     int run(int argc, char** argv);
+
 }
 
 #endif //HEAVENLY_API
