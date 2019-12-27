@@ -1,20 +1,27 @@
 #ifndef ENTITY_COMPONENT_SYSTEM_H_
 #define ENTITY_COMPONENT_SYSTEM_H_
 
+
 namespace Heavenly
 {
-	namespace EntityComponentSystem
-	{
-		// TODO: Define API for the Entity Component System
-		template<typename Entity_t, typename ...Component_t>
-		void RegisterEntityType(Entity_t newEntityType, Component_t ...componentsList);
+    namespace EntityComponentSystem
+    {
+        typedef void (*SystemTickFunc)(float timeDelta);
 
-		template<typename System_t>
-		void RegisterSystemType(System_t newSystem);
+        // TODO: Define API for the Entity Component System
+        // ECS System API
+        // Creates an empty entity
+        unsigned int CreateEntity();
 
-		template<typename Component_t>
-		void RegisterComponentType(Component_t newComponent);
-	}
+        unsigned int CreateEntity();
+
+        void RegisterSystemType(SystemTickFunc tick);
+
+        template<typename Component_t>
+        void RegisterComponentType(Component_t newComponent);
+
+        void Tick(float timeDelta);
+    }
 }
 
 #endif //ENTITY_COMPONENT_SYSTEM_H_

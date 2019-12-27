@@ -1,44 +1,60 @@
 #include "../EntityComponentSystem.h"
 
+#include <iostream>
+#include <vector>
 #include <string>
 
 using namespace Heavenly;
 
 struct Component
 {
-	// TODO: A component is a bundle of data, with a list of systems that will act upon it.
+    // TODO: A component is a bundle of data, with a list of systems that will act upon it.
 };
 
+static void EmptySystemTickFunction(float timeDelta)
+{
+    std::cout << "Uninitialized tick function.";
+}
 struct System
 {
-	// TODO: A System acts upon the various components of an Entity.
+    // TODO: A System acts upon various components of an Entity.
+    EntityComponentSystem::SystemTickFunc Tick { *EmptySystemTickFunction };
 };
 
 struct Entity
 {
-	// TODO: An Entity is a collection of components. Each cycle they will all be ran against their systems.
+    // TODO: An Entity is a collection of components. Each cycle they will all be ran against their systems.
 };
 
-template<typename Entity_t, typename ...Component_t>
-void EntityComponentSystem::RegisterEntityType(Entity_t newEntityType, Component_t ...componentsList)
-{
+static std::vector<System*>     w_systems;
+static std::vector<Entity*>     w_entities;
+static std::vector<Component*>  w_components;
 
+unsigned int EntityComponentSystem::CreateEntity()
+{
+    return 0;
 }
 
-template<typename Entity_t, typename Component_t>
-static void RegisterEntityTypeImpl(Entity_t newEntityType, std::initializer_list<Component_t> componentsList)
+void EntityComponentSystem::RegisterSystemType(SystemTickFunc tick)
 {
-
-}
-
-template<typename System_t>
-void EntityComponentSystem::RegisterSystemType(System_t newSystem)
-{
-
+    System* addedSystem;
+    addedSystem->Tick = *tick;
+    w_systems.push_back(addedSystem);
 }
 
 template<typename Component_t>
-void EntityComponentSystem::RegisterComponentType(Component_t newComponent)
+void EntityComponentSystem::RegisterComponentType()
 {
 
+}
+
+/* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the
+ * order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
+ * running said systems)*/
+void EntityComponentSystem::Tick(float timeDelta)
+{
+    for(System* s : w_systems)
+    {
+        s->Tick(timeDelta);
+    }
 }
