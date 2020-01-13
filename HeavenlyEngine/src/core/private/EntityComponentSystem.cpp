@@ -2,58 +2,57 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <string>
 
-using namespace Heavenly;
+using namespace Heavenly::EntityComponentSystem;
 
-struct Component
+Entity::Entity(unsigned int id) : entityID{id}
 {
-    // TODO: A component is a bundle of data, with a list of systems that will act upon it.
-};
 
-static void EmptySystemTickFunction(float timeDelta)
-{
-    std::cout << "Uninitialized tick function.";
-}
-struct System
-{
-    // TODO: A System acts upon various components of an Entity.
-    EntityComponentSystem::SystemTickFunc Tick { *EmptySystemTickFunction };
-};
-
-struct Entity
-{
-    // TODO: An Entity is a collection of components. Each cycle they will all be ran against their systems.
-};
-
-static std::vector<System*>     w_systems;
-static std::vector<Entity*>     w_entities;
-static std::vector<Component*>  w_components;
-
-unsigned int EntityComponentSystem::CreateEntity()
-{
-    return 0;
 }
 
-void EntityComponentSystem::RegisterSystemType(SystemTickFunc tick)
+Entity::Entity(unsigned int id, std::initializer_list<Component*> component_list) :
+    entityID{id},
+    components{component_list}
 {
-    System* addedSystem;
-    addedSystem->Tick = *tick;
-    w_systems.push_back(addedSystem);
+
 }
 
-template<typename Component_t>
-void EntityComponentSystem::RegisterComponentType()
+Entity::~Entity()
 {
+    for(Component* c : components)
+    {
+        // TODO: For each component remove it from any admins they are registered to and delete the data.
+    }
+}
 
+struct Heavenly::EntityComponentSystem::EntityAdmin
+{
+    std::vector<System*> systems;
+    std::vector<void*> components;
+    std::unordered_map<unsigned int, Entity*> entities;
+    unsigned int nextID {0};
+};
+
+unsigned int CreateEntity(EntityAdmin* targetAdmin)
+{
+    Entity* newEntity = new Entity(targetAdmin->nextID);
+    targetAdmin->entities.insert({ targetAdmin->nextID, newEntity });
+    targetAdmin->nextID++;
+    return targetAdmin->nextID++;
+}
+
+void RegisterSystemType(EntityAdmin* targetAdmin, System* system) {
+    targetAdmin->systems.push_back(system);
 }
 
 /* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the
- * order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
- * running said systems)*/
-void EntityComponentSystem::Tick(float timeDelta)
+* order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
+* running said systems)*/
+void Tick(EntityAdmin* targetAdmin, float timeDelta)
 {
-    for(System* s : w_systems)
+    for(System* s : targetAdmin->systems)
     {
         s->Tick(timeDelta);
     }
