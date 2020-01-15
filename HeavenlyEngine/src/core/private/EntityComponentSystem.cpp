@@ -16,7 +16,7 @@ Entity::Entity(unsigned int id, std::initializer_list<Component*> component_list
     entityID{id},
     components{component_list}
 {
-
+    
 }
 
 Entity::~Entity()
@@ -35,25 +35,29 @@ struct Heavenly::EntityComponentSystem::EntityAdmin
     unsigned int nextID {0};
 };
 
-unsigned int CreateEntity(EntityAdmin* targetAdmin)
+unsigned int EntityAdmin::CreateEntity()
 {
-    Entity* newEntity = new Entity(targetAdmin->nextID);
-    targetAdmin->entities.insert({ targetAdmin->nextID, newEntity });
-    targetAdmin->nextID++;
-    return targetAdmin->nextID++;
+    Entity* newEntity = new Entity(next_entity_id);
+    world_entities.insert({ next_entity_id, newEntity });
+    return next_entity_id++;
 }
 
-void RegisterSystemType(EntityAdmin* targetAdmin, System* system) {
-    targetAdmin->systems.push_back(system);
+void EntityAdmin::RegisterComponent(Component* component)
+{
+    world_components.push_back(component);
+}
+
+void EntityAdmin::RegisterSystem(System* system) {
+    world_systems.push_back(system);
 }
 
 /* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the
 * order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
 * running said systems)*/
-void Tick(EntityAdmin* targetAdmin, float timeDelta)
+void EntityAdmin::Tick(float time_delta)
 {
-    for(System* s : targetAdmin->systems)
+    for(System* s : world_systems)
     {
-        s->Tick(timeDelta);
+        s->Tick(time_delta);
     }
 }

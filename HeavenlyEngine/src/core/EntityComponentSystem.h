@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <initializer_list>
+#include <unordered_map>
 
 namespace Heavenly
 {
@@ -18,7 +19,7 @@ namespace Heavenly
         class System
         {
         public:
-            void Tick(float deltaTime);
+            virtual void Tick(float delta_time) = 0;
         };
 
         class Entity
@@ -34,21 +35,26 @@ namespace Heavenly
             std::vector<Component*> components;
         };
 
-        class EntityAdmin;
+        class EntityAdmin
+        {
+        public:
+            EntityAdmin() = default;
+            ~EntityAdmin();
 
-        // TODO: Define API for the Entity Component System
-        // ECS System API
-        // Creates an empty entity
-        unsigned int CreateEntity();
+            // ECS System API
+            void Tick(float delta_time);
 
-        unsigned int CreateEntity();
+            unsigned int CreateEntity();
+            void RegisterComponent(Component* component);
+            void RegisterSystem(System* system);
 
-        void RegisterSystemType(EntityAdmin* targetAdmin, System system);
+        private:
+            std::unordered_map<unsigned int, Entity*> world_entities;
+            std::vector<Component*> world_components;
+            std::vector<System*> world_systems;
 
-        template<typename Component_t>
-        void RegisterComponentType(Component_t newComponent);
-
-        void Tick(EntityAdmin* targetAdmin, float timeDelta);
+            unsigned int next_entity_id {0};
+        };
     }
 }
 
