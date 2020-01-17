@@ -20,6 +20,7 @@ add_subdirectory(
 add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Heavenly.cpp
 	${SRC_DIR}/core/private/EntityComponentSystem.cpp
+    ${SRC_DIR}/graphics/private/GUI.cpp
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
@@ -30,6 +31,8 @@ add_library(${ENGINE_LIB}
 
 target_include_directories(${ENGINE_LIB} PRIVATE
     ${SRC_DIR}/core
+    ${SRC_DIR}/graphics
+    ${SRC_DIR}/math
 
     ${GLAD_DIR}/include
     ${IMGUI_DIR}

@@ -22,7 +22,7 @@ namespace Heavenly
             virtual void Tick(float delta_time) = 0;
         };
 
-        class Entity
+        class Entity final
         {
         public:
             Entity() = default;
@@ -35,11 +35,11 @@ namespace Heavenly
             std::vector<Component*> components;
         };
 
-        class EntityAdmin
+        class WorldAdmin
         {
         public:
-            EntityAdmin() = default;
-            ~EntityAdmin();
+            WorldAdmin() = default;
+            ~WorldAdmin() = default;
 
             // ECS System API
             void Tick(float delta_time);

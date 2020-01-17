@@ -1,6 +1,8 @@
 #include "Heavenly.h"
+#include "EntityComponentSystem.h"
+#include "GUI.h"
 
-#include <stdio.h>
+#include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -9,9 +11,21 @@
 
 int Heavenly::run(int argc, char** argv)
 {
-    printf("Heavenly Engine Started...\n");
+    std::cout << "Heavenly Engine Started..." << std::endl;
 
-    if (!glfwInit()) {
+    std::cout << "Creating EntityAdmin" << std::endl;
+
+    auto admin = EntityComponentSystem::WorldAdmin();
+
+    std::cout << "Admin created... Adding GUISystem to it and ticking once..." << std::endl;
+
+    admin.RegisterSystem(new GUI::GUISystem());
+
+    admin.Tick(0.5);
+
+    std::cout << "Tick successful." << std::endl;
+
+    /*if (!glfwInit()) {
         printf("Could not init glfw. Exiting.");
         return -1;
     }
@@ -48,9 +62,9 @@ int Heavenly::run(int argc, char** argv)
         glfwSwapBuffers(window);
 
         glfwPollEvents();
-    }
+    }*/
 
-    printf("Heavenly Engine Shutdown...\n");
+    std::cout << "Heavenly Engine Shutdown..." << std::endl;
 
     return 0;
 }
