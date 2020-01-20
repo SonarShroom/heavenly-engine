@@ -25,18 +25,7 @@ int Heavenly::run(int argc, char** argv)
 
     std::cout << "Tick successful." << std::endl;
 
-    /*if (!glfwInit()) {
-        printf("Could not init glfw. Exiting.");
-        return -1;
-    }
-
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Heavenly Game Engine", NULL, NULL);
-    if (!window) {
-        printf("Could not create glfw window. Exiting.");
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
+    /*
 
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         printf("Could not initialize glad. Exiting.");

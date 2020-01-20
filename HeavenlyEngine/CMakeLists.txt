@@ -19,8 +19,9 @@ add_subdirectory(
 
 add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Heavenly.cpp
-	${SRC_DIR}/core/private/EntityComponentSystem.cpp
+    ${SRC_DIR}/core/private/EntityComponentSystem.cpp
     ${SRC_DIR}/graphics/private/GUI.cpp
+    ${SRC_DIR}/graphics/private/OpenGLRenderer.cpp
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp

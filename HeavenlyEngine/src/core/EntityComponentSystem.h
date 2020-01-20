@@ -41,9 +41,12 @@ namespace Heavenly
             WorldAdmin() = default;
             ~WorldAdmin() = default;
 
-            // ECS System API
+            // Admin lifetime functions
+            int Init();
             void Tick(float delta_time);
+            void KillAdmin();
 
+            // ECS System API
             unsigned int CreateEntity();
             void RegisterComponent(Component* component);
             void RegisterSystem(System* system);
