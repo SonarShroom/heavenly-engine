@@ -44,3 +44,5 @@ target_link_libraries(${ENGINE_LIB}
     glad
     glfw
 )
+
+target_compile_features(${ENGINE_LIB} PUBLIC cxx_std_17)

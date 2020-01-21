@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <string>
 
+#include "OpenGLRenderer.h"
+
 using namespace Heavenly::EntityComponentSystem;
 
 Entity::Entity(unsigned int id) : entityID(id)
@@ -34,13 +36,15 @@ unsigned int WorldAdmin::CreateEntity()
     return next_entity_id++;
 }
 
-void WorldAdmin::RegisterComponent(Component* component)
+int WorldAdmin::Init()
 {
-    world_components.push_back(component);
-}
-
-void WorldAdmin::RegisterSystem(System* system) {
-    world_systems.push_back(system);
+    // TODO: Initialize remaining subsystems
+    CreateSystem<Heavenly::Rendering::Renderer>();
+    /*if(Heavenly::Rendering::InitializeOpenGLRenderer() < 0)
+    {
+        return -1;
+    }*/
+    return 0;
 }
 
 /* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the

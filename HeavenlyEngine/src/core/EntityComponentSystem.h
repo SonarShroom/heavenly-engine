@@ -4,6 +4,7 @@
 #include <vector>
 #include <initializer_list>
 #include <unordered_map>
+#include <type_traits>
 
 namespace Heavenly
 {
@@ -48,8 +49,23 @@ namespace Heavenly
 
             // ECS System API
             unsigned int CreateEntity();
-            void RegisterComponent(Component* component);
-            void RegisterSystem(System* system);
+
+            template<class Component_t>
+            void CreateComponent()
+            {
+                static_assert(std::is_base_of_v<Component, Component_t>,
+                    "Component type must be derived from Component!");
+                auto new_component = new Component_t();
+                world_components.push_back(new_component);
+            }
+
+            template<class System_t>
+            void CreateSystem()
+            {
+                static_assert(std::is_base_of_v<System, System_t>, "System type must be derived from System!");
+                auto new_system = new System_t();
+                world_systems.push_back(new_system);
+            }
 
         private:
             std::unordered_map<unsigned int, Entity*> world_entities;

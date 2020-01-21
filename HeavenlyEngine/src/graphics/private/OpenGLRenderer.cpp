@@ -1,21 +1,28 @@
 #include "OpenGLRenderer.h"
 
-#include <GLFW/glfw3.h>
+#include <iostream>
 
-using namespace Heavenly::Rendering;
-
-int InitializeOpenGLRenderer()
+int Heavenly::Rendering::Renderer::InitContext()
 {
     if (!glfwInit()) {
-        printf("Could not init glfw. Exiting.");
+        std::cout << "Could not init glfw. Exiting." << std::endl;
         return -1;
     }
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Heavenly Game Engine", NULL, NULL);
     if (!window) {
-        printf("Could not create glfw window. Exiting.");
+        std::cout << "Could not create glfw window. Exiting." << std::endl;
+        glfwTerminate();
         return -1;
     }
 
     glfwMakeContextCurrent(window);
+
+    if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        std::cout << "Could not initialize GLAD. Exiting." << std::endl;
+        return -1;
+    }
+
+    std::cout << "OpenGL initialized. Version: " << glGetString(GL_VERSION) << std::endl;
+    return 0;
 }

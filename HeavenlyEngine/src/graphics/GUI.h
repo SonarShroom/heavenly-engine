@@ -17,6 +17,7 @@ namespace Heavenly
 
         class GUISystem : public EntityComponentSystem::System
         {
+        public:
             void Tick(float time_delta) override;
         };
     }

@@ -4,9 +4,6 @@
 
 #include <iostream>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "imgui.h"
 
 int Heavenly::run(int argc, char** argv)
@@ -16,10 +13,11 @@ int Heavenly::run(int argc, char** argv)
     std::cout << "Creating EntityAdmin" << std::endl;
 
     auto admin = EntityComponentSystem::WorldAdmin();
+    admin.Init();
 
     std::cout << "Admin created... Adding GUISystem to it and ticking once..." << std::endl;
 
-    admin.RegisterSystem(new GUI::GUISystem());
+    admin.CreateSystem<GUI::GUISystem>();
 
     admin.Tick(0.5);
 
@@ -27,10 +25,7 @@ int Heavenly::run(int argc, char** argv)
 
     /*
 
-    if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        printf("Could not initialize glad. Exiting.");
-        return -1;
-    }
+    
 
 
     IMGUI_CHECKVERSION();
