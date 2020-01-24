@@ -1,8 +1,10 @@
 #include "Heavenly.h"
 #include "EntityComponentSystem.h"
 #include "GUI.h"
+#include "Rendering.h"
 
 #include <iostream>
+#include <chrono>
 
 #include "imgui.h"
 
@@ -10,16 +12,25 @@ int Heavenly::run(int argc, char** argv)
 {
     std::cout << "Heavenly Engine Started..." << std::endl;
 
-    std::cout << "Creating EntityAdmin" << std::endl;
+    std::cout << "Creating EntityAdmin..." << std::endl;
 
-    auto admin = EntityComponentSystem::WorldAdmin();
-    admin.Init();
+    auto admin = new EntityComponentSystem::WorldAdmin();
 
-    std::cout << "Admin created... Adding GUISystem to it and ticking once..." << std::endl;
+    std::cout << "Creating Renderer..." << std::endl;
 
-    admin.CreateSystem<GUI::GUISystem>();
+    auto renderer = new Rendering::Renderer();
+    renderer->InitContext();
 
-    admin.Tick(0.5);
+    auto end_frame_time = std::chrono::steady_clock::now();
+
+    while (!renderer->ShouldCloseWindow())
+    {
+        auto time_delta = (end_frame_time - std::chrono::steady_clock::now()).count();
+        admin->Tick(time_delta);
+        renderer->Tick(time_delta);
+
+        end_frame_time = std::chrono::steady_clock::now();
+    }
 
     std::cout << "Tick successful." << std::endl;
 
@@ -41,11 +52,7 @@ int Heavenly::run(int argc, char** argv)
 
     while (!glfwWindowShouldClose(window)) {
 
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glfwSwapBuffers(window);
-
-        glfwPollEvents();
+        
     }*/
 
     std::cout << "Heavenly Engine Shutdown..." << std::endl;

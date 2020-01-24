@@ -20,6 +20,7 @@ namespace Heavenly
         class System
         {
         public:
+            System() = default;
             virtual void Tick(float delta_time) = 0;
         };
 
@@ -43,7 +44,6 @@ namespace Heavenly
             ~WorldAdmin() = default;
 
             // Admin lifetime functions
-            int Init();
             void Tick(float delta_time);
             void KillAdmin();
 

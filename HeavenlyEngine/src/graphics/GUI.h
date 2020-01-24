@@ -11,6 +11,8 @@ namespace Heavenly
     {
         class GUIComponent : public EntityComponentSystem::Component
         {
+        public:
+            GUIComponent() = default;
             Math::Vector2 position;
             Math::Vector2 size;
         };

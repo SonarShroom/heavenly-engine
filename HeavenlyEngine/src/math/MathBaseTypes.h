@@ -7,6 +7,7 @@ namespace Heavenly
     {
         class Vector2
         {
+        public:
             Vector2() = default;
 
             Vector2(float _x) : x(_x) {}
@@ -18,6 +19,7 @@ namespace Heavenly
 
         class Vector3
         {
+        public:
             Vector3() = default;
 
             Vector3(float _x) : x(_x) {}
@@ -31,6 +33,7 @@ namespace Heavenly
 
         class Vector4
         {
+        public:
             Vector4() = default;
 
             Vector4(float _x) : x(_x) {}
