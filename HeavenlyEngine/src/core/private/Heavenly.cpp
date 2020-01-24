@@ -19,20 +19,24 @@ int Heavenly::run(int argc, char** argv)
     std::cout << "Creating Renderer..." << std::endl;
 
     auto renderer = new Rendering::Renderer();
-    renderer->InitContext();
+    renderer->InitContext(600, 400, false);
 
     auto end_frame_time = std::chrono::steady_clock::now();
 
     while (!renderer->ShouldCloseWindow())
     {
-        auto time_delta = (end_frame_time - std::chrono::steady_clock::now()).count();
+        auto time_delta = (std::chrono::steady_clock::now() - end_frame_time).count();
+        std::cout << "Ticking with time_delta: " << time_delta << std::endl;
         admin->Tick(time_delta);
         renderer->Tick(time_delta);
 
         end_frame_time = std::chrono::steady_clock::now();
     }
 
-    std::cout << "Tick successful." << std::endl;
+    delete renderer;
+    delete admin;
+
+    std::cout << "Heavenly Engine Shutdown..." << std::endl;
 
     /*
 
@@ -54,8 +58,6 @@ int Heavenly::run(int argc, char** argv)
 
         
     }*/
-
-    std::cout << "Heavenly Engine Shutdown..." << std::endl;
 
     return 0;
 }

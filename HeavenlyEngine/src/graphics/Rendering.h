@@ -16,6 +16,8 @@ namespace Heavenly
         class RenderContext : public EntityComponentSystem::Component
         {
         public:
+            Math::Vector2 window_resolution {1280, 720};
+            bool window_resizable {false};
             GLFWwindow* window {nullptr};
         };
 
@@ -28,9 +30,9 @@ namespace Heavenly
         {
         public:
             Renderer() = default;
-            ~Renderer() = default;
-            
-            int InitContext();
+            ~Renderer();
+
+            int InitContext(int window_width = 1280, int window_height = 720, bool window_resizable = true);
             bool ShouldCloseWindow();
 
             void Tick(float time_delta);

@@ -4,7 +4,17 @@
 
 using namespace Heavenly::Rendering;
 
-int Renderer::InitContext()
+Renderer::~Renderer()
+{
+    if(render_context)
+    {
+        std::cout << "Destroying render context..." << std::endl;
+        glfwDestroyWindow(render_context->window);
+        delete render_context;
+    }
+}
+
+int Renderer::InitContext(int window_width, int window_height, bool window_resizable)
 {
     if (!glfwInit()) {
         std::cout << "Could not init glfw. Exiting." << std::endl;
@@ -12,7 +22,9 @@ int Renderer::InitContext()
     }
 
     render_context = new RenderContext();
-    render_context->window = glfwCreateWindow(1280, 720, "Heavenly Game Engine", NULL, NULL);
+    render_context->window_resolution = {window_width, window_width};
+    render_context->window_resizable = window_resizable;
+    render_context->window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
     if (!render_context->window) {
         std::cout << "Could not create glfw window. Exiting." << std::endl;
         glfwTerminate();
