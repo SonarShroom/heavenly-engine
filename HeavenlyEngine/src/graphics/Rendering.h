@@ -11,8 +11,6 @@ namespace Heavenly
 {
     namespace Rendering
     {
-        int InitializeOpenGLRenderer();
-
         class RenderContext : public EntityComponentSystem::Component
         {
         public:
