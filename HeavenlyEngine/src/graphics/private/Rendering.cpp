@@ -22,7 +22,7 @@ int Renderer::InitContext(int window_width, int window_height, bool window_resiz
     }
 
     render_context = new RenderContext();
-    render_context->window_resolution = {window_width, window_width};
+    render_context->window_resolution = {(float)window_width, (float)window_width};
     render_context->window_resizable = window_resizable;
     render_context->window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
     if (!render_context->window) {

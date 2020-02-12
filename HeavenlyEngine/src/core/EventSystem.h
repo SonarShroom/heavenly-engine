@@ -1,32 +1,42 @@
 #ifndef EVENT_SYSYEM_H_
 #define EVENT_SYSYEM_H_
 
-#include "EntityComponentSystem.h"
-
 #include <vector>
+#include <functional>
 
 namespace Heavenly
 {
     namespace EventSystem
     {
-        class Event : public EntityComponentSystem::Component
+        class Event
         {
-
+            Event() = default;
         };
 
         class EventManager
         {
         public:
+            EventManager() = default;
+            ~EventManager();
+
             template<class Event_t>
-            void PushEvent()
-            {
+            void RegisterEventListener(std::function<void(Event_t&)> listener_callback) {
                 static_assert(std::is_base_of_v<Event, Event_t>, "Event type must be derived from Event!");
-                auto new_event = new Event_t();
-                event_buffer.emplace_back(new_event);
+                event_listeners.push_back(listener_callback);
             }
 
+            void PushEvent(Event* new_event);
+
+            void ProcessEvents();
+
         private:
-            std::vector<Event*> event_buffer;
+            using EventQueue = std::vector<Event*>;
+            using EventListeners = std::vector<std::function<void(Event&)>>;
+
+            EventQueue event_buffer;
+            EventListeners event_listeners;
+
+            float event_processing_timeout { 5 };
         };
     }
 }

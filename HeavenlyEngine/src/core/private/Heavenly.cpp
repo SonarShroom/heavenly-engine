@@ -1,6 +1,6 @@
 #include "Heavenly.h"
 #include "EntityComponentSystem.h"
-#include "GUI.h"
+#include "EventSystem.h"
 #include "Rendering.h"
 
 #include <iostream>
@@ -21,6 +21,8 @@ int Heavenly::run(int argc, char** argv)
     auto renderer = new Rendering::Renderer();
     renderer->InitContext(600, 400, false);
 
+    auto eventManager = new EventSystem::EventManager();
+
     auto end_frame_time = std::chrono::steady_clock::now();
 
     while (!renderer->ShouldCloseWindow())
@@ -29,6 +31,7 @@ int Heavenly::run(int argc, char** argv)
         std::cout << "Ticking with time_delta: " << time_delta << std::endl;
         admin->Tick(time_delta);
         renderer->Tick(time_delta);
+        eventManager->ProcessEvents();
 
         end_frame_time = std::chrono::steady_clock::now();
     }
