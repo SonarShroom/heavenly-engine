@@ -20,7 +20,6 @@ add_subdirectory(
 add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Heavenly.cpp
     ${SRC_DIR}/core/private/EntityComponentSystem.cpp
-    ${SRC_DIR}/core/private/EventSystem.cpp
     ${SRC_DIR}/graphics/private/GUI.cpp
     ${SRC_DIR}/graphics/private/Rendering.cpp
     ${IMGUI_DIR}/imgui.cpp
