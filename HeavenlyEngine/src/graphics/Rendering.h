@@ -19,9 +19,19 @@ namespace Heavenly
             GLFWwindow* window {nullptr};
         };
 
-        class RenderableComponent : public EntityComponentSystem::Component
+        class RenderableComponent
         {
+        public:
+            RenderableComponent(unsigned int vbo_id, unsigned int vs_id, unsigned int fs_id, unsigned int sp_id) :
+                vertex_buffer_object_id(vbo_id),
+                vertex_shader_id(vs_id),
+                fragment_shader_id(fs_id),
+                shader_program_id(sp_id) {};
 
+            unsigned int vertex_buffer_object_id    { 0 };
+            unsigned int vertex_shader_id           { 0 };
+            unsigned int fragment_shader_id         { 0 };
+            unsigned int shader_program_id          { 0 };
         };
 
         class Renderer
