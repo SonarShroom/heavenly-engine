@@ -19,6 +19,7 @@ int Heavenly::run(int argc, char** argv)
 
     auto renderer = new Rendering::Renderer();
     renderer->InitContext(600, 400, false);
+    renderer->CreateRect();
 
     auto end_frame_time = std::chrono::steady_clock::now();
 

@@ -2,7 +2,30 @@
 
 #include <iostream>
 
+#include "Rect.h"
+
 using namespace Heavenly::Rendering;
+
+RenderableComponent::RenderableComponent()
+{
+    glGenBuffers(1, &vertex_buffer_object_id);
+}
+
+void RenderableComponent::SetVBOData(void* data, std::vector<VertexDataDescriptor> data_descriptors)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_id);
+
+    unsigned int current_data_descriptor = 0;
+    for(auto descriptor : data_descriptors)
+    {
+        glVertexAttribPointer(
+            current_data_descriptor,
+            descriptor.data_size,
+            )
+    }
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+}
 
 Renderer::~Renderer()
 {
@@ -46,6 +69,12 @@ void Renderer::Tick(float time_delta)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
+    for(auto* renderable : renderable_components)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, renderable->vertex_buffer_object_id);
+
+    }
+
     glfwSwapBuffers(render_context->window);
 
     glfwPollEvents();
@@ -54,4 +83,10 @@ void Renderer::Tick(float time_delta)
 bool Renderer::ShouldCloseWindow()
 {
     return glfwWindowShouldClose(render_context->window);
+}
+
+void Renderer::CreateRect()
+{
+    Rect* new_rect = new Rect();
+    renderable_components.push_back(new_rect->GetRenderableComponent());
 }

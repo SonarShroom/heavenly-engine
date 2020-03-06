@@ -1,16 +1,24 @@
 #ifndef RECT_H_
 #define RECT_H_
 
+#include "Rendering.h"
 #include "math.h"
 
 namespace Heavenly
 {
     namespace Rendering
     {
-        class Rect : public RenderableComponent
+        class Rect
         {
-            Math::Vector3 vertexLocations[4];
-        }
+        public:
+            Rect();
+
+            inline RenderableComponent* GetRenderableComponent() { return renderable_comp; }
+
+        private:
+            std::vector<Vertex*> vertex_locations;
+            RenderableComponent* renderable_comp { nullptr };
+        };
     }
 }
 
