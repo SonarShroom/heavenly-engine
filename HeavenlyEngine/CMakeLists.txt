@@ -30,6 +30,7 @@ add_library(${ENGINE_LIB}
     ${SRC_DIR}/graphics/private/GUI.cpp
     ${SRC_DIR}/graphics/private/Rendering.cpp
     ${SRC_DIR}/graphics/private/Rect.cpp
+    ${SRC_DIR}/logging/private/LogManager.cpp
 
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
@@ -43,6 +44,7 @@ target_include_directories(${ENGINE_LIB} PRIVATE
     ${SRC_DIR}/core
     ${SRC_DIR}/graphics
     ${SRC_DIR}/math
+    ${SRC_DIR}/logging
 
     ${GLAD_DIR}/include
     ${IMGUI_DIR}

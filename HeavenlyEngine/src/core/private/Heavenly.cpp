@@ -1,6 +1,7 @@
 #include "Heavenly.h"
 #include "EntityComponentSystem.h"
 #include "Rendering.h"
+#include "LogManager.h"
 
 #include <iostream>
 #include <chrono>
@@ -9,6 +10,9 @@
 
 int Heavenly::run(int argc, char** argv)
 {
+    // TODO: Does nothing for now, will make it do stuff later.
+    HV_LOG_INFO("Heavenly", "Heavenly Engine Started...");
+
     std::cout << "Heavenly Engine Started..." << std::endl;
 
     std::cout << "Creating EntityAdmin..." << std::endl;
@@ -65,7 +69,6 @@ int Heavenly::run(int argc, char** argv)
     while (!renderer->ShouldCloseWindow())
     {
         auto time_delta = (std::chrono::steady_clock::now() - end_frame_time).count();
-        std::cout << "Ticking with time_delta: " << time_delta << std::endl;
         admin->Tick(time_delta);
         renderer->Tick(time_delta);
 
