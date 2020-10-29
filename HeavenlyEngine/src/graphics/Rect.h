@@ -2,7 +2,8 @@
 #define RECT_H_
 
 #include "Rendering.h"
-#include "math.h"
+
+#include <array>
 
 namespace Heavenly
 {
@@ -15,8 +16,11 @@ namespace Heavenly
 
             inline RenderableComponent* GetRenderableComponent() { return renderable_comp; }
 
+            void SetShader(int shader_program_id);
+
         private:
-            std::vector<Vertex*> vertex_locations;
+            std::array<Vertex, 3> vertex_locations;
+            std::vector<VertexDataDescriptor> data_descriptors;
             RenderableComponent* renderable_comp { nullptr };
         };
     }

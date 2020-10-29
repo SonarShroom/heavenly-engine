@@ -19,7 +19,46 @@ int Heavenly::run(int argc, char** argv)
 
     auto renderer = new Rendering::Renderer();
     renderer->InitContext(600, 400, false);
-    renderer->CreateRect();
+
+    // TODO: This is not a good API to be honest... must rework asap after getting the rect on screen.
+    const char* vertex_shader_source = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+    int vertex_shader_id = 0;
+    bool vert_success = renderer->RegisterNewVertexShader(vertex_shader_source, vertex_shader_id);
+
+    const char* frag_shader_source = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\0";
+    int frag_shader_id = 0;
+    bool frag_success = renderer->RegisterNewFragmentShader(frag_shader_source, frag_shader_id);
+
+    if (!vert_success || !frag_success)
+    {
+        std::cout << "Creating rect without shader program...";
+        renderer->CreateRect();
+    }
+    else
+    {
+        int shader_program_id = 0;
+        bool link_success = renderer->RegisterNewShaderProgram(vertex_shader_id, frag_shader_id, shader_program_id);
+
+        if (!link_success)
+        {
+            std::cout << "Creating rect without shader program (link went wrong)...";
+            renderer->CreateRect();
+        }
+        else
+        {
+            renderer->CreateRect(shader_program_id);
+        }
+    }
 
     auto end_frame_time = std::chrono::steady_clock::now();
 
