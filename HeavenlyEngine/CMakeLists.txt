@@ -1,6 +1,9 @@
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 
+set(SPDLOG_DIR ${3RD_PARTY_DIR}/spdlog)
+include_directories(${SPDLOG_DIR}/include/spdlog)
+
 set(IMGUI_DIR ${3RD_PARTY_DIR}/imgui)
 include_directories(${IMGUI_DIR})
 
@@ -14,7 +17,11 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(
-    thirdparty/glfw
+    ${3RD_PARTY_DIR}/glfw
+)
+
+add_subdirectory(
+    ${SPDLOG_DIR}
 )
 
 add_library(${ENGINE_LIB}
@@ -42,9 +49,14 @@ target_include_directories(${ENGINE_LIB} PRIVATE
 )
 target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/src/include)
 
-target_link_libraries(${ENGINE_LIB}
+if(NOT TARGET spdlog)
+    find_package(spdlog REQUIRED)
+endif()
+
+target_link_libraries(${ENGINE_LIB} PRIVATE
     glad
     glfw
+    spdlog::spdlog
 )
 
 target_compile_features(${ENGINE_LIB} PUBLIC cxx_std_17)
