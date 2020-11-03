@@ -13,15 +13,15 @@ int Heavenly::run(int argc, char** argv)
     // TODO: Probably obfuscate this into the first HV_LOG_* call.
     Logging::LogManager::InitLogging();
 
-    HV_LOG_INFO("Heavenly", "Heavenly Engine Started");
+    HV_LOG_INFO("Engine", "Heavenly Engine Started");
 
-    HV_LOG_INFO("Heavenly", "Creating Subsystems...");
+    HV_LOG_INFO("Engine", "Creating Subsystems...");
 
-    HV_LOG_INFO("Heavenly", "Creating EntityAdmin...");
+    HV_LOG_INFO("Engine", "Creating EntityAdmin...");
 
     auto admin = new EntityComponentSystem::WorldAdmin();
 
-    HV_LOG_INFO("Heavenly", "Creating Renderer...");
+    HV_LOG_INFO("Engine","Creating Renderer...");
 
     auto renderer = new Rendering::Renderer();
     renderer->InitContext(600, 400, false);
@@ -47,7 +47,7 @@ int Heavenly::run(int argc, char** argv)
 
     if (!vert_success || !frag_success)
     {
-        HV_LOG_ERROR("Heavenly", "Creating rect without shader program...");
+        HV_LOG_ERROR("Engine", "Creating rect without shader program...");
         renderer->CreateRect();
     }
     else
@@ -57,7 +57,7 @@ int Heavenly::run(int argc, char** argv)
 
         if (!link_success)
         {
-            HV_LOG_ERROR("Heavenly", "Creating rect without shader program (link went wrong)...");
+            HV_LOG_ERROR("Engine", "Creating rect without shader program (link went wrong)...");
             renderer->CreateRect();
         }
         else
@@ -80,7 +80,7 @@ int Heavenly::run(int argc, char** argv)
     delete renderer;
     delete admin;
 
-    HV_LOG_INFO("Heavenly", "Heavenly Engine Shutdown...");
+    HV_LOG_INFO("Engine", "Heavenly Engine Shutdown...");
 
     /*
 
