@@ -1,5 +1,5 @@
-#ifndef LOGGER_HEAVENLY_H_
-#define LOGGER_HEAVENLY_H_
+#ifndef LOG_MANAGER_H_
+#define LOG_MANAGER_H_
 
 #include <string>
 #include <vector>
@@ -62,4 +62,4 @@ private:
 
 }
 
-#endif
+#endif //LOG_MANAGER_H_
