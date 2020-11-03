@@ -6,7 +6,7 @@ using namespace Heavenly::Logging;
 
 std::vector<std::shared_ptr<spdlog::logger>> LogManager::loggers;
 
-void LogManager::InitLogging() {
+void LogManager::Init() {
 
     // Set pattern for out messages:
     spdlog::set_pattern("%^[%Y-%m-%d %H:%M:%S.%e][%n][%l]: %v %$");

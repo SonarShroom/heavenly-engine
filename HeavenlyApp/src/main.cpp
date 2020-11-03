@@ -2,5 +2,5 @@
 
 int main(int argc, char** argv)
 {
-    return Heavenly::run(argc, argv);
+    return Heavenly::Run(argc, argv);
 }

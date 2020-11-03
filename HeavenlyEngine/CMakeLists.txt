@@ -49,6 +49,12 @@ target_include_directories(${ENGINE_LIB} PRIVATE
     ${GLAD_DIR}/include
     ${IMGUI_DIR}
 )
+
+configure_file(
+    ${SRC_DIR}/core/HeavenlyVersion.h.in
+    ${SRC_DIR}/core/HeavenlyVersion.h
+)
+
 target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/src/include)
 
 if(NOT TARGET spdlog)

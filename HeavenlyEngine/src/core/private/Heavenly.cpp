@@ -1,3 +1,4 @@
+#include "HeavenlyVersion.h"
 #include "Heavenly.h"
 #include "EntityComponentSystem.h"
 #include "Rendering.h"
@@ -8,10 +9,18 @@
 
 #include "imgui.h"
 
-int Heavenly::run(int argc, char** argv)
+void Heavenly::InitializeEngine()
 {
-    // TODO: Probably obfuscate this into the first HV_LOG_* call.
-    Logging::LogManager::InitLogging();
+    // TODO: When more engine subsystems should be initialized, add them here.
+    Logging::LogManager::Init();
+
+    // TODO: This file should be manually configured by cmake in order to hold version info here.
+    HV_LOG_INFO("Engine", "Heavenly Started. Version: {}", HEAVENLY_VERSION);
+}
+
+int Heavenly::Run(int argc, char** argv)
+{
+    InitializeEngine();
 
     HV_LOG_INFO("Engine", "Heavenly Engine Started");
 

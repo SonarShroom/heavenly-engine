@@ -33,7 +33,7 @@ class LogManager
 
 public:
 
-    static void InitLogging();
+    static void Init();
 
     // TODO: Understand why this Args var cannot be const
     template<typename ...Args>

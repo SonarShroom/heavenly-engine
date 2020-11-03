@@ -39,3 +39,5 @@ build/
 
 # Visual Studio specific files
 .vs/
+
+HeavenlyEngine/src/core/HeavenlyVersion.h
