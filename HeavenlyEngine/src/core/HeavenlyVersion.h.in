@@ -3,10 +3,10 @@
 // File used by cmake to generate definitions for the project version numbers
 namespace Heavenly
 {
-    constexpr unsigned int HEAVENLY_VERSION_MAJOR = @Heavenly_VERSION_MAJOR@;
-    constexpr unsigned int HEAVENLY_VERSION_MINOR = @Heavenly_VERSION_MINOR@;
-    constexpr unsigned int HEAVENLY_VERSION_PATCH = @Heavenly_VERSION_PATCH@;
-    constexpr unsigned int HEAVENLY_VERSION_TWEAK = @Heavenly_VERSION_TWEAK@;
-    constexpr char HEAVENLY_VERSION[] = "@Heavenly_VERSION@";
+    constexpr unsigned int HEAVENLY_VERSION_MAJOR = @HeavenlyEngine_VERSION_MAJOR@;
+    constexpr unsigned int HEAVENLY_VERSION_MINOR = @HeavenlyEngine_VERSION_MINOR@;
+    constexpr unsigned int HEAVENLY_VERSION_PATCH = @HeavenlyEngine_VERSION_PATCH@;
+    constexpr unsigned int HEAVENLY_VERSION_TWEAK = @HeavenlyEngine_VERSION_TWEAK@;
+    constexpr char HEAVENLY_VERSION[] = "@HeavenlyEngine_VERSION@";
 }
 #endif //HEAVENLY_VERSION_H_

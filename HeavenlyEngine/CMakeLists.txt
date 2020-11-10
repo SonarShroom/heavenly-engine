@@ -1,3 +1,8 @@
+project(HeavenlyEngine
+        VERSION 0.0.0.1
+        DESCRIPTION "Heavenly Game Engine"
+        LANGUAGES CXX)
+
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 
