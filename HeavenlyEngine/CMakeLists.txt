@@ -1,7 +1,20 @@
 project(HeavenlyEngine
-        VERSION 0.0.0.1
+        VERSION 0.0.0
         DESCRIPTION "Heavenly Game Engine"
-        LANGUAGES CXX)
+        LANGUAGES CXX
+)
+
+# TODO: Once the engine part has been put into a separate repo, this work dir must be changed.
+execute_process(
+    COMMAND
+        git rev-parse --short HEAD
+    OUTPUT_VARIABLE
+        HeavenlyEngine_REVISION
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+)
+string(REGEX REPLACE "\n" "" HeavenlyEngine_REVISION "${HeavenlyEngine_REVISION}")
+message(STATUS "Heavenly Engine Version: " ${HeavenlyEngine_VERSION} "-" ${HeavenlyEngine_REVISION})
 
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
