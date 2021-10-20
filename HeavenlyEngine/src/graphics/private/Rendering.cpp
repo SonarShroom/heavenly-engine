@@ -39,7 +39,7 @@ Renderer::~Renderer()
 {
     if(render_context)
     {
-        HV_LOG_INFO("Renderer", "Destroying render context...");
+        HV_LOG_INFO("Destroying render context...");
         glfwDestroyWindow(render_context->window);
         delete render_context;
     }
@@ -48,7 +48,7 @@ Renderer::~Renderer()
 int Renderer::InitContext(int window_width, int window_height, bool window_resizable)
 {
     if (!glfwInit()) {
-        HV_LOG_ERROR("Renderer", "Could not init glfw. Exiting.");
+        HV_LOG_ERROR("Could not init glfw. Exiting.");
         return -1;
     }
 
@@ -57,7 +57,7 @@ int Renderer::InitContext(int window_width, int window_height, bool window_resiz
     render_context->window_resizable = window_resizable;
     render_context->window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
     if (!render_context->window) {
-        HV_LOG_INFO("Renderer", "Could not create glfw window. Exiting.");
+        HV_LOG_INFO("Could not create glfw window. Exiting.");
         glfwTerminate();
         return -1;
     }
@@ -65,11 +65,11 @@ int Renderer::InitContext(int window_width, int window_height, bool window_resiz
     glfwMakeContextCurrent(render_context->window);
 
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        HV_LOG_INFO("Renderer", "Could not initialize GLAD. Exiting.");
+        HV_LOG_INFO("Could not initialize GLAD. Exiting.");
         return -1;
     }
 
-    HV_LOG_INFO("Renderer", "OpenGL initialized. Version: {}", glGetString(GL_VERSION));
+    HV_LOG_INFO("OpenGL initialized. Version: {}", glGetString(GL_VERSION));
     return 0;
 }
 
@@ -121,7 +121,7 @@ bool Renderer::CheckShaderCompilationSuccess(const int shader_id)
 
     char infoLog[512] {0};
     glGetShaderInfoLog(shader_id, 512, NULL, infoLog);
-    HV_LOG_ERROR("Shader", "Error on shader compilation: {}", infoLog);
+    HV_LOG_ERROR("Error on shader compilation: {}", infoLog);
     return false;
 }
 
@@ -150,7 +150,7 @@ bool Renderer::CheckShaderProgramLinkingError(const int shader_program_id)
 
     char infoLog[512]{ 0 };
     glGetProgramInfoLog(shader_program_id, 512, NULL, infoLog);
-    HV_LOG_ERROR("Shader", "Oh shit my boy we got the following linking error: {}", infoLog);
+    HV_LOG_ERROR("Oh shit my boy we got the following linking error: {}", infoLog);
     return false;
 }
 

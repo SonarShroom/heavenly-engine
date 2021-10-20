@@ -8,18 +8,13 @@
 #include "spdlog.h"
 #include "spdlog/sinks/base_sink.h"
 
-namespace spdlog
-{
-    class logger;
-}
-
-#define HV_LOG_INFO(system, msg, ...)        HV_LOG(system, spdlog::level::info, msg, ##__VA_ARGS__)
-#define HV_LOG_WARNING(system, msg, ...)     HV_LOG(system, spdlog::level::warn, msg, ##__VA_ARGS__)
-#define HV_LOG_ERROR(system, msg, ...)       HV_LOG(system, spdlog::level::err, msg, ##__VA_ARGS__)
-#define HV_LOG_FATAL(system, msg, ...)       HV_LOG(system, spdlog::level::critical, msg, ##__VA_ARGS__)
+#define HV_LOG_INFO(msg, ...)        HV_LOG(spdlog::level::info, msg, ##__VA_ARGS__)
+#define HV_LOG_WARNING(msg, ...)     HV_LOG(spdlog::level::warn, msg, ##__VA_ARGS__)
+#define HV_LOG_ERROR(msg, ...)       HV_LOG(spdlog::level::err, msg, ##__VA_ARGS__)
+#define HV_LOG_FATAL(msg, ...)       HV_LOG(spdlog::level::critical, msg, ##__VA_ARGS__)
 
 // TODO: Create macros to call logger
-#define HV_LOG(system, level, msg, ...)      Heavenly::Logging::LogManager::Log(system, level, msg, ##__VA_ARGS__)
+#define HV_LOG(level, msg, ...)      Heavenly::Logging::LogManager::Log(level, msg, ##__VA_ARGS__)
 
 namespace Heavenly
 {
@@ -37,7 +32,7 @@ public:
 
     // TODO: Understand why this Args var cannot be const
     template<typename ...Args>
-    static void Log(const std::string& system, const spdlog::level::level_enum& level, Args&&... msgArgs)
+    static void Log(const spdlog::level::level_enum& level, Args&&... msgArgs)
     {
         // TODO: Log to all loggers
         for(auto logger : loggers) {

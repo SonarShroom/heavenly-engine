@@ -15,22 +15,22 @@ void Heavenly::InitializeEngine()
     Logging::LogManager::Init();
 
     // TODO: This file should be manually configured by cmake in order to hold version info here.
-    HV_LOG_INFO("Engine", "Heavenly Started. Version: {}", HEAVENLY_VERSION);
+    HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 }
 
 int Heavenly::Run(int argc, char** argv)
 {
     InitializeEngine();
 
-    HV_LOG_INFO("Engine", "Heavenly Engine Started");
+    HV_LOG_INFO("Heavenly Engine Started");
 
-    HV_LOG_INFO("Engine", "Creating Subsystems...");
+    HV_LOG_INFO("Creating Subsystems...");
 
-    HV_LOG_INFO("Engine", "Creating EntityAdmin...");
+    HV_LOG_INFO("Creating EntityAdmin...");
 
     auto admin = new EntityComponentSystem::WorldAdmin();
 
-    HV_LOG_INFO("Engine","Creating Renderer...");
+    HV_LOG_INFO("Creating Renderer...");
 
     auto renderer = new Rendering::Renderer();
     renderer->InitContext(600, 400, false);
@@ -56,7 +56,7 @@ int Heavenly::Run(int argc, char** argv)
 
     if (!vert_success || !frag_success)
     {
-        HV_LOG_ERROR("Engine", "Creating rect without shader program...");
+        HV_LOG_ERROR("Creating rect without shader program...");
         renderer->CreateRect();
     }
     else
@@ -66,7 +66,7 @@ int Heavenly::Run(int argc, char** argv)
 
         if (!link_success)
         {
-            HV_LOG_ERROR("Engine", "Creating rect without shader program (link went wrong)...");
+            HV_LOG_ERROR("Creating rect without shader program (link went wrong)...");
             renderer->CreateRect();
         }
         else
@@ -89,7 +89,7 @@ int Heavenly::Run(int argc, char** argv)
     delete renderer;
     delete admin;
 
-    HV_LOG_INFO("Engine", "Heavenly Engine Shutdown...");
+    HV_LOG_INFO("Heavenly Engine Shutdown...");
 
     /*
 
