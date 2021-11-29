@@ -7,6 +7,16 @@
 
 using namespace Heavenly::Rendering;
 
+namespace Heavenly
+{
+
+namespace Rendering
+{
+
+RenderContext _renderingCtx;
+
+std::vector<RenderableComponent*> _renderable_components;
+
 RenderableComponent::RenderableComponent()
 {
     glGenVertexArrays(1, &vertex_array_object_id);
@@ -35,34 +45,22 @@ void RenderableComponent::SetVBOData(void* data, std::size_t data_size, std::vec
     }
 }
 
-Renderer::~Renderer()
-{
-    if(render_context)
-    {
-        HV_LOG_INFO("Destroying render context...");
-        glfwDestroyWindow(render_context->window);
-        delete render_context;
-    }
-}
-
-int Renderer::InitContext(int window_width, int window_height, bool window_resizable)
+int Init(int window_width, int window_height)
 {
     if (!glfwInit()) {
         HV_LOG_ERROR("Could not init glfw. Exiting.");
         return -1;
     }
 
-    render_context = new RenderContext();
-    render_context->window_resolution = {(float)window_width, (float)window_width};
-    render_context->window_resizable = window_resizable;
-    render_context->window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
-    if (!render_context->window) {
+    _renderingCtx.window_resolution = {(float)window_width, (float)window_width};
+    _renderingCtx.window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
+    if (!_renderingCtx.window) {
         HV_LOG_INFO("Could not create glfw window. Exiting.");
         glfwTerminate();
         return -1;
     }
 
-    glfwMakeContextCurrent(render_context->window);
+    glfwMakeContextCurrent(_renderingCtx.window);
 
     if(!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         HV_LOG_INFO("Could not initialize GLAD. Exiting.");
@@ -73,23 +71,33 @@ int Renderer::InitContext(int window_width, int window_height, bool window_resiz
     return 0;
 }
 
-void Renderer::Tick(float time_delta)
+void Terminate()
+{
+    HV_LOG_INFO("Destroying render context...");
+    if (_renderingCtx.window != nullptr)
+    {
+        glfwDestroyWindow(_renderingCtx.window);
+        _renderingCtx.window = nullptr;
+    }
+}
+
+void Tick(float time_delta)
 {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for(auto* renderable : renderable_components)
+    for(auto* renderable : _renderable_components)
     {
         glUseProgram(renderable->shader_program_id);
         glBindVertexArray(renderable->vertex_array_object_id);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    glfwSwapBuffers(render_context->window);
+    glfwSwapBuffers(_renderingCtx.window);
 
     glfwPollEvents();
 }
 
-bool Renderer::RegisterNewVertexShader(const char* shader_source, int& shaderId)
+bool RegisterNewVertexShader(const char* shader_source, int& shaderId)
 {
     shaderId = glCreateShader(GL_VERTEX_SHADER);
 
@@ -99,7 +107,7 @@ bool Renderer::RegisterNewVertexShader(const char* shader_source, int& shaderId)
     return CheckShaderCompilationSuccess(shaderId);
 }
 
-bool Renderer::RegisterNewFragmentShader(const char* shader_source, int& shader_id)
+bool RegisterNewFragmentShader(const char* shader_source, int& shader_id)
 {
     shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -109,7 +117,7 @@ bool Renderer::RegisterNewFragmentShader(const char* shader_source, int& shader_
     return CheckShaderCompilationSuccess(shader_id);
 }
 
-bool Renderer::CheckShaderCompilationSuccess(const int shader_id)
+bool CheckShaderCompilationSuccess(const int shader_id)
 {
     int success = 0;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
@@ -125,7 +133,7 @@ bool Renderer::CheckShaderCompilationSuccess(const int shader_id)
     return false;
 }
 
-bool Renderer::RegisterNewShaderProgram(int vertex_shader_id, int frag_shader_id, int& shader_program_id)
+bool RegisterNewShaderProgram(int vertex_shader_id, int frag_shader_id, int& shader_program_id)
 {
     shader_program_id = glCreateProgram();
     glAttachShader(shader_program_id, vertex_shader_id);
@@ -139,7 +147,7 @@ bool Renderer::RegisterNewShaderProgram(int vertex_shader_id, int frag_shader_id
     return CheckShaderProgramLinkingError(shader_program_id);
 }
 
-bool Renderer::CheckShaderProgramLinkingError(const int shader_program_id)
+bool CheckShaderProgramLinkingError(const int shader_program_id)
 {
     int success = 0;
     glGetProgramiv(shader_program_id, GL_LINK_STATUS, &success);
@@ -154,20 +162,24 @@ bool Renderer::CheckShaderProgramLinkingError(const int shader_program_id)
     return false;
 }
 
-bool Renderer::ShouldCloseWindow()
+bool ShouldCloseWindow()
 {
-    return glfwWindowShouldClose(render_context->window);
+    return glfwWindowShouldClose(_renderingCtx.window);
 }
 
-void Renderer::CreateRect()
+void CreateRect()
 {
     Rect* new_rect = new Rect();
-    renderable_components.push_back(new_rect->GetRenderableComponent());
+    _renderable_components.push_back(new_rect->GetRenderableComponent());
 }
 
-void Renderer::CreateRect(const int shader_program_id)
+void CreateRect(const int shader_program_id)
 {
     Rect* new_rect = new Rect();
     new_rect->SetShader(shader_program_id);
-    renderable_components.push_back(new_rect->GetRenderableComponent());
+    _renderable_components.push_back(new_rect->GetRenderableComponent());
+}
+
+}
+
 }

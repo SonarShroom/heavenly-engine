@@ -9,31 +9,30 @@
 
 #include "imgui.h"
 
-void Heavenly::InitializeEngine()
+namespace Heavenly
 {
-    // TODO: When more engine subsystems should be initialized, add them here.
-    Logging::LogManager::Init();
 
-    // TODO: This file should be manually configured by cmake in order to hold version info here.
+void InitializeEngine()
+{
+    Logging::LogManager::Init();
+    Rendering::Init();
+
     HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 }
 
-int Heavenly::Run(int argc, char** argv)
+void Terminate()
+{
+    Rendering::Terminate();
+    HV_LOG_INFO("Heavenly Engine shutdown.");
+}
+
+int Run(int argc, char** argv)
 {
     InitializeEngine();
 
     HV_LOG_INFO("Heavenly Engine Started");
 
-    HV_LOG_INFO("Creating Subsystems...");
-
-    HV_LOG_INFO("Creating EntityAdmin...");
-
     auto admin = new EntityComponentSystem::WorldAdmin();
-
-    HV_LOG_INFO("Creating Renderer...");
-
-    auto renderer = new Rendering::Renderer();
-    renderer->InitContext(600, 400, false);
 
     // TODO: This is not a good API to be honest... must rework asap after getting the rect on screen.
     const char* vertex_shader_source = "#version 330 core\n"
@@ -43,7 +42,7 @@ int Heavenly::Run(int argc, char** argv)
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\0";
     int vertex_shader_id = 0;
-    bool vert_success = renderer->RegisterNewVertexShader(vertex_shader_source, vertex_shader_id);
+    bool vert_success =  Rendering::RegisterNewVertexShader(vertex_shader_source, vertex_shader_id);
 
     const char* frag_shader_source = "#version 330 core\n"
         "out vec4 FragColor;\n"
@@ -52,42 +51,41 @@ int Heavenly::Run(int argc, char** argv)
         "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\0";
     int frag_shader_id = 0;
-    bool frag_success = renderer->RegisterNewFragmentShader(frag_shader_source, frag_shader_id);
+    bool frag_success = Rendering::RegisterNewFragmentShader(frag_shader_source, frag_shader_id);
 
     if (!vert_success || !frag_success)
     {
         HV_LOG_ERROR("Creating rect without shader program...");
-        renderer->CreateRect();
+        Rendering::CreateRect();
     }
     else
     {
         int shader_program_id = 0;
-        bool link_success = renderer->RegisterNewShaderProgram(vertex_shader_id, frag_shader_id, shader_program_id);
+        bool link_success = Rendering::RegisterNewShaderProgram(vertex_shader_id, frag_shader_id, shader_program_id);
 
         if (!link_success)
         {
             HV_LOG_ERROR("Creating rect without shader program (link went wrong)...");
-            renderer->CreateRect();
+            Rendering::CreateRect();
         }
         else
         {
-            renderer->CreateRect(shader_program_id);
+            Rendering::CreateRect(shader_program_id);
         }
     }
 
     auto end_frame_time = std::chrono::steady_clock::now();
 
-    while (!renderer->ShouldCloseWindow())
+    while (!Rendering::ShouldCloseWindow())
     {
         auto time_delta = (std::chrono::steady_clock::now() - end_frame_time).count();
         admin->Tick(time_delta);
-        renderer->Tick(time_delta);
+        Rendering::Tick(time_delta);
 
         end_frame_time = std::chrono::steady_clock::now();
     }
 
-    delete renderer;
-    delete admin;
+    Terminate();
 
     HV_LOG_INFO("Heavenly Engine Shutdown...");
 
@@ -113,4 +111,8 @@ int Heavenly::Run(int argc, char** argv)
     }*/
 
     return 0;
+}
+
+
+
 }

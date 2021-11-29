@@ -2,79 +2,106 @@
 #define ENTITY_COMPONENT_SYSTEM_H_
 
 #include <vector>
-#include <initializer_list>
 #include <unordered_map>
-#include <type_traits>
+#include <typeinfo>
+#include <functional>
 
 namespace Heavenly
 {
-    namespace EntityComponentSystem
+
+namespace EntityComponentSystem
+{
+
+class Component
+{
+    Component(const unsigned int component_id) : component_id(component_id) { }
+
+    unsigned int component_id = 0;
+};
+
+class Entity final
+{
+public:
+    Entity() = default;
+    Entity(unsigned int id);
+    Entity(unsigned int id, std::initializer_list<unsigned int> component_ids);
+    ~Entity() = default;
+
+private:
+    unsigned int entity_id {0};
+    std::vector<unsigned int> component_id_list;
+};
+
+/*template <typename Vector_t, class Component_t>
+class ComponentIterator
+{
+private:
+    Vector_t& vector;
+    Component_t* current = nullptr;
+
+public:
+    ComponentIterator(const Vector_t& vector) : vector(vector)
     {
-        class Component
+        for ()
         {
-        public:
-            Component() = default;
-            ~Component() = default;
-        };
 
-        class System
-        {
-        public:
-            System() = default;
-            virtual void Tick(float delta_time) = 0;
-        };
-
-        class Entity final
-        {
-        public:
-            Entity() = default;
-            Entity(unsigned int id);
-            Entity(unsigned int id, std::initializer_list<Component*> component_list);
-            ~Entity();
-
-        private:
-            unsigned int entityID {0};
-            std::vector<Component*> components;
-        };
-
-        class WorldAdmin
-        {
-        public:
-            WorldAdmin() = default;
-            ~WorldAdmin() = default;
-
-            // Admin lifetime functions
-            void Tick(float delta_time);
-            void KillAdmin();
-
-            // ECS System API
-            unsigned int CreateEntity();
-
-            template<class Component_t>
-            void CreateComponent()
-            {
-                static_assert(std::is_base_of_v<Component, Component_t>,
-                    "Component type must be derived from Component!");
-                auto new_component = new Component_t();
-                world_components.push_back(new_component);
-            }
-
-            template<class System_t>
-            void CreateSystem()
-            {
-                static_assert(std::is_base_of_v<System, System_t>, "System type must be derived from System!");
-                auto new_system = new System_t();
-                world_systems.push_back(new_system);
-            }
-
-        private:
-            std::unordered_map<unsigned int, Entity*> world_entities;
-            std::vector<Component*> world_components;
-            std::vector<System*> world_systems;
-
-            unsigned int next_entity_id {0};
-        };
+        }
     }
+
+    void operator *() const
+    {
+
+    }
+};
+*/
+
+class WorldAdmin
+{
+public:
+    WorldAdmin() = default;
+    ~WorldAdmin() = default;
+
+    // Admin lifetime functions
+    void Tick(float delta_time);
+    void KillAdmin();
+
+    // ECS System API
+    unsigned int CreateEntity();
+    void DestroyEntity(const unsigned int entity_id);
+
+    template<class Component_t, typename ...Args>
+    void CreateComponent(const unsigned int entity_id, const Args... args)
+    {
+        static_assert(std::is_base_of<Component, Component_t>::value, "Component type must be derived from Component!");
+        auto new_component = new Component_t(next_component_id++);
+        world_components.push_back(new_component);
+    }
+
+    template<typename System_t>
+    void RegisterSystem()
+    {
+        world_systems.push_back(
+            [](const float delta_time)
+            {
+                System_t::Tick(delta_time);
+            }
+        );
+    }
+
+private:
+
+    using SystemTickFunc = std::function<void(float)>;
+
+    std::unordered_map<unsigned int, Entity*> world_entities;
+    std::vector<Component*> world_components;
+    std::vector<SystemTickFunc> world_systems;
+
+    unsigned int next_entity_id = 0;
+    unsigned int next_component_id = 0;
+};
+
+}
+
 }
 
 #endif //ENTITY_COMPONENT_SYSTEM_H_

@@ -7,22 +7,17 @@
 
 #include "Rendering.h"
 
-using namespace Heavenly::EntityComponentSystem;
-
-Entity::Entity(unsigned int id) : entityID(id) { }
-
-Entity::Entity(unsigned int id, std::initializer_list<Component*> component_list) :
-    entityID(id),
-    components(component_list) { }
-
-Entity::~Entity()
+namespace Heavenly
 {
-    for(Component* c : components)
-    {
-        // TODO: For each component remove it from any admins they are registered to and delete the data.
-        delete c;
-    }
-}
+
+namespace EntityComponentSystem
+{
+
+Entity::Entity(unsigned int id) : entity_id(id) { }
+
+Entity::Entity(unsigned int id, std::initializer_list<unsigned int> component_list) :
+    entity_id(id),
+    component_id_list(component_list) { }
 
 unsigned int WorldAdmin::CreateEntity()
 {
@@ -36,8 +31,12 @@ unsigned int WorldAdmin::CreateEntity()
 * running said systems)*/
 void WorldAdmin::Tick(float time_delta)
 {
-    for(System* s : world_systems)
+    for(const auto& s : world_systems)
     {
-        s->Tick(time_delta);
+        s(time_delta);
     }
+}
+
+}
+
 }
