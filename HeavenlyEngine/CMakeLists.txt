@@ -43,7 +43,7 @@ add_subdirectory(
 )
 
 add_library(${ENGINE_LIB}
-    ${SRC_DIR}/core/private/Heavenly.cpp
+    ${SRC_DIR}/core/private/Core.cpp
     ${SRC_DIR}/core/private/EntityComponentSystem.cpp
     ${SRC_DIR}/graphics/private/GUI.cpp
     ${SRC_DIR}/graphics/private/Rendering.cpp
@@ -54,8 +54,6 @@ add_library(${ENGINE_LIB}
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/imgui_demo.cpp
-
-    ${SRC_DIR}/core/Heavenly.h
 )
 
 target_include_directories(${ENGINE_LIB} PRIVATE
@@ -73,7 +71,7 @@ configure_file(
     ${SRC_DIR}/core/HeavenlyVersion.h
 )
 
-target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/src/include)
+target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/include ${ENGINE_DIR}/src)
 
 if(NOT TARGET spdlog)
     find_package(spdlog REQUIRED)

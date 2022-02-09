@@ -3,7 +3,8 @@
 
 namespace Heavenly
 {
-    int Run(int argc, char** argv);
+    struct AppRuntime;
+    int Run(AppRuntime* app);
 }
 
 #endif //HEAVENLY_H_

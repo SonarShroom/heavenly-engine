@@ -1,5 +1,7 @@
+#include "Core.h"
+
+#include "AppRuntime.h"
 #include "HeavenlyVersion.h"
-#include "Heavenly.h"
 #include "EntityComponentSystem.h"
 #include "Rendering.h"
 #include "LogManager.h"
@@ -26,11 +28,9 @@ void Terminate()
     HV_LOG_INFO("Heavenly Engine shutdown.");
 }
 
-int Run(int argc, char** argv)
+int Run(AppRuntime* app)
 {
     InitializeEngine();
-
-    HV_LOG_INFO("Heavenly Engine Started");
 
     auto admin = new EntityComponentSystem::WorldAdmin();
 
