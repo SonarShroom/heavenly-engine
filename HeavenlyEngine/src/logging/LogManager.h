@@ -16,11 +16,7 @@
 // TODO: Create macros to call logger
 #define HV_LOG(level, msg, ...)      Heavenly::Logging::LogManager::Log(level, msg, ##__VA_ARGS__)
 
-namespace Heavenly
-{
-
-
-namespace Logging
+namespace Heavenly::Logging
 {
 
 class LogManager
@@ -52,8 +48,6 @@ public:
 private:
     static std::vector<std::shared_ptr<spdlog::logger>> loggers;
 };
-
-}
 
 }
 

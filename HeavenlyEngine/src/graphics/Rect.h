@@ -5,25 +5,24 @@
 
 #include <array>
 
-namespace Heavenly
+namespace Heavenly::Rendering
 {
-namespace Rendering
-{
+
 class Rect
 {
 public:
-    Rect();
+	Rect();
 
-    inline RenderableComponent* GetRenderableComponent() { return renderable_comp; }
+	inline RenderableComponent* GetRenderableComponent() { return renderable_comp; }
 
-    void SetShader(int shader_program_id);
+	void SetShader(int shader_program_id);
 
 private:
-    std::array<Vertex, 3> vertex_locations;
-    std::vector<VertexDataDescriptor> data_descriptors;
-    RenderableComponent* renderable_comp { nullptr };
+	std::array<Vertex, 3> vertex_locations;
+	std::vector<VertexDataDescriptor> data_descriptors;
+	RenderableComponent* renderable_comp { nullptr };
 };
-}
+
 }
 
 #endif //RECT_H_

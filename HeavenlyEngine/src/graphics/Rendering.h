@@ -7,10 +7,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace Heavenly
+namespace Heavenly::Rendering
 {
-namespace Rendering
-{
+
 struct Vertex
 {
     Math::Vector3 position      {0, 0, 0};
@@ -69,7 +68,6 @@ bool CheckShaderProgramLinkingError(const int shader_program_id);
 
 bool CheckShaderCompilationSuccess(const int shader_id);
 
-}
 }
 
 #endif //RENDERERING_H_

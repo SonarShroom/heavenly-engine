@@ -2,8 +2,8 @@
 
 namespace Heavenly {
 struct AppRuntime {
-    using RunFunc = void(*)();
+	using RunFunc = void(*)();
 
-    RunFunc runFunction = nullptr;
+	RunFunc runFunction = nullptr;
 };
 }

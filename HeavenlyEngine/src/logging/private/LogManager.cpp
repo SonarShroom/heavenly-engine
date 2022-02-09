@@ -2,7 +2,8 @@
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-using namespace Heavenly::Logging;
+namespace Heavenly::Logging
+{
 
 std::vector<std::shared_ptr<spdlog::logger>> LogManager::loggers;
 
@@ -18,4 +19,6 @@ void LogManager::Init() {
 void LogManager::CreateStdOutLogger(const std::string& loggerName)
 {
     LogManager::loggers.push_back(spdlog::stdout_color_mt(loggerName));
+}
+
 }

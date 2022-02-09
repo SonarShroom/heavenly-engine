@@ -5,12 +5,7 @@
 #include "Rect.h"
 #include "LogManager.h"
 
-using namespace Heavenly::Rendering;
-
-namespace Heavenly
-{
-
-namespace Rendering
+namespace Heavenly::Rendering
 {
 
 RenderContext _renderingCtx;
@@ -178,8 +173,6 @@ void CreateRect(const int shader_program_id)
     Rect* new_rect = new Rect();
     new_rect->SetShader(shader_program_id);
     _renderable_components.push_back(new_rect->GetRenderableComponent());
-}
-
 }
 
 }
