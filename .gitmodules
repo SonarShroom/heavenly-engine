@@ -1,7 +1,7 @@
 [submodule "imgui"]
 	path = HeavenlyEngine/thirdparty/imgui
 	url = git@github.com:ocornut/imgui.git
-	branch = master
+	branch = docking
 [submodule "spdlog"]
 	path = HeavenlyEngine/thirdparty/spdlog
 	url = git@github.com:gabime/spdlog.git
