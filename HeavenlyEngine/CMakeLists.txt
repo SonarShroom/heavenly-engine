@@ -54,6 +54,11 @@ add_library(${ENGINE_LIB}
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+
+    # Included while we use some ImGui helper functions
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(${ENGINE_LIB} PRIVATE
@@ -64,6 +69,7 @@ target_include_directories(${ENGINE_LIB} PRIVATE
 
     ${GLAD_DIR}/include
     ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
 )
 
 configure_file(

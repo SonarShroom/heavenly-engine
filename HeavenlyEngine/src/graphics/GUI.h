@@ -1,26 +1,20 @@
 #ifndef GUI_H_
 #define GUI_H_
 
-#include "EntityComponentSystem.h"
-#include "MathBaseTypes.h"
 #include <string>
+
+namespace Heavenly::Rendering
+{
+struct RenderContext;
+}
 
 namespace Heavenly::GUI
 {
+void InitDevGui(Rendering::RenderContext* ctx);
 
-class GUIComponent : public EntityComponentSystem::Component
-{
-public:
-	Math::Vector2 position;
-	Math::Vector2 size;
-};
+void ShowDevGui();
 
-class GUISystem
-{
-public:
-	void Tick(float time_delta);
-};
-
+void Terminate();
 }
 
 #endif //GUI_H_

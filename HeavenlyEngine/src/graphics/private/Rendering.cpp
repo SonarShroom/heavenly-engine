@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Rect.h"
+#include "GUI.h"
 #include "LogManager.h"
 
 namespace Heavenly::Rendering
@@ -63,11 +64,14 @@ int Init(int window_width, int window_height)
     }
 
     HV_LOG_INFO("OpenGL initialized. Version: {}", glGetString(GL_VERSION));
+
+    GUI::InitDevGui(&_renderingCtx);
     return 0;
 }
 
 void Terminate()
 {
+    GUI::Terminate();
     HV_LOG_INFO("Destroying render context...");
     if (_renderingCtx.window != nullptr)
     {
@@ -78,6 +82,8 @@ void Terminate()
 
 void Tick(float time_delta)
 {
+    glfwPollEvents();
+
     glClear(GL_COLOR_BUFFER_BIT);
 
     for(auto* renderable : _renderable_components)
@@ -87,9 +93,9 @@ void Tick(float time_delta)
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    glfwSwapBuffers(_renderingCtx.window);
+    GUI::ShowDevGui();
 
-    glfwPollEvents();
+    glfwSwapBuffers(_renderingCtx.window);
 }
 
 bool RegisterNewVertexShader(const char* shader_source, int& shaderId)

@@ -89,27 +89,6 @@ int Run(AppRuntime* app)
 
 	HV_LOG_INFO("Heavenly Engine Shutdown...");
 
-	/*
-
-
-
-
-	IMGUI_CHECKVERSION();
-
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	ImGui::StyleColorsDark();
-
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-	ImGui::NewFrame();
-	ImGui::ShowDemoWindow();
-
-	while (!glfwWindowShouldClose(window)) {
-
-
-	}*/
-
 	return 0;
 }
 
