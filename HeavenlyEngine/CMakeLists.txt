@@ -28,6 +28,8 @@ include_directories(${IMGUI_DIR})
 set(GLAD_DIR thirdparty/glad)
 add_library("glad" ${GLAD_DIR}/src/glad.c)
 
+set(FMT_DIR ${3RD_PARTY_DIR}/fmt)
+
 target_include_directories("glad" PRIVATE ${GLAD_DIR}/include)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -40,6 +42,10 @@ add_subdirectory(
 
 add_subdirectory(
     ${SPDLOG_DIR}
+)
+
+add_subdirectory(
+    ${FMT_DIR}
 )
 
 add_library(${ENGINE_LIB}
@@ -90,3 +96,5 @@ target_link_libraries(${ENGINE_LIB} PRIVATE
 )
 
 target_compile_features(${ENGINE_LIB} PUBLIC cxx_std_17)
+
+set_target_properties(${ENGINE_LIB} PROPERTIES CXX_STANDARD 20)

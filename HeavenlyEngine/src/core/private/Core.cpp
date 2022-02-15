@@ -16,7 +16,7 @@ namespace Heavenly
 
 void InitializeEngine()
 {
-	Logging::LogManager::Init();
+	Logging::Init();
 	Rendering::Init();
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);

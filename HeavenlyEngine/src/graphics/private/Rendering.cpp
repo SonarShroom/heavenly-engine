@@ -49,6 +49,9 @@ int Init(int window_width, int window_height)
     }
 
     _renderingCtx.window_resolution = {(float)window_width, (float)window_width};
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     _renderingCtx.window = glfwCreateWindow(window_width, window_height, "Heavenly Game Engine", NULL, NULL);
     if (!_renderingCtx.window) {
         HV_LOG_INFO("Could not create glfw window. Exiting.");
@@ -62,6 +65,8 @@ int Init(int window_width, int window_height)
         HV_LOG_INFO("Could not initialize GLAD. Exiting.");
         return -1;
     }
+	
+	glViewport(0, 0, window_width, window_height);
 
     HV_LOG_INFO("OpenGL initialized. Version: {}", glGetString(GL_VERSION));
 

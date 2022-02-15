@@ -6,3 +6,6 @@
 	path = HeavenlyEngine/thirdparty/spdlog
 	url = git@github.com:gabime/spdlog.git
 	branch = v1.x
+[submodule "HeavenlyEngine/thirdparty/fmt"]
+	path = HeavenlyEngine/thirdparty/fmt
+	url = git@github.com:fmtlib/fmt.git
