@@ -42,6 +42,8 @@ bool ShouldClose();
 
 void SwapBuffers();
 
+void PollEvents();
+
 void Terminate();
 
 }

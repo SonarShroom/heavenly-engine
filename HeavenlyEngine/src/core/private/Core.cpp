@@ -88,6 +88,7 @@ int Run(AppRuntime* app)
 		auto time_delta = (std::chrono::steady_clock::now() - end_frame_time).count();
 		admin->Tick(time_delta);
 		Rendering::Tick(time_delta);
+		Window::PollEvents();
 
 		end_frame_time = std::chrono::steady_clock::now();
 	}

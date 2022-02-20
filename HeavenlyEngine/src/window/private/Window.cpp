@@ -131,6 +131,11 @@ void SwapBuffers()
 	glfwSwapBuffers(m_mainWindowCtx->window);
 }
 
+void PollEvents()
+{
+	glfwPollEvents();
+}
+
 void Terminate()
 {
 	if (m_mainWindowCtx->window)

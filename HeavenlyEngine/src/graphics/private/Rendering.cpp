@@ -53,8 +53,6 @@ void Terminate()
 
 void Tick(float time_delta)
 {
-	glfwPollEvents();
-
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	for(auto* renderable : m_renderableComponents)
