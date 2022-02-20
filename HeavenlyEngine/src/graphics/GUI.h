@@ -3,14 +3,14 @@
 
 #include <string>
 
-namespace Heavenly::Rendering
+namespace Heavenly::Window
 {
-struct RenderContext;
+struct WindowContext;
 }
 
 namespace Heavenly::GUI
 {
-void InitDevGui(Rendering::RenderContext* ctx);
+void InitDevGui(const Window::WindowContext* ctx = nullptr);
 
 void ShowDevGui();
 

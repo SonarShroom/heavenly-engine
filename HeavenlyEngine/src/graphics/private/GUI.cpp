@@ -4,13 +4,18 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "Rendering.h"
+#include "LogManager.h"
+#include "Window.h"
 
 namespace Heavenly::GUI
 {
 
-void InitDevGui(Rendering::RenderContext* ctx)
+void InitDevGui(const Window::WindowContext* ctx)
 {
+	if (!ctx)
+	{
+		return;
+	}
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
@@ -40,6 +45,7 @@ void ShowDevGui()
 
 void Terminate()
 {
+	HV_LOG_INFO("Destroying ImGui Context...");
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();

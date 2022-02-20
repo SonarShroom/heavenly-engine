@@ -1,15 +1,14 @@
 #include "Core.h"
 
-#include "AppRuntime.h"
-#include "HeavenlyVersion.h"
-#include "EntityComponentSystem.h"
-#include "Rendering.h"
-#include "LogManager.h"
-
 #include <iostream>
 #include <chrono>
 
-#include "imgui.h"
+#include "AppRuntime.h"
+#include "EntityComponentSystem.h"
+#include "HeavenlyVersion.h"
+#include "LogManager.h"
+#include "Rendering.h"
+#include "Window.h"
 
 namespace Heavenly
 {
@@ -17,7 +16,15 @@ namespace Heavenly
 void InitializeEngine()
 {
 	Logging::Init();
-	Rendering::Init();
+
+	if (!Window::Init())
+	{
+		HV_LOG_ERROR("Could not initialize window system.");
+		return;
+	}
+
+	Window::CreateWindow();
+	Rendering::Init(Window::GetWindowContext());
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 }
@@ -76,7 +83,7 @@ int Run(AppRuntime* app)
 
 	auto end_frame_time = std::chrono::steady_clock::now();
 
-	while (!Rendering::ShouldCloseWindow())
+	while (!Window::ShouldClose())
 	{
 		auto time_delta = (std::chrono::steady_clock::now() - end_frame_time).count();
 		admin->Tick(time_delta);

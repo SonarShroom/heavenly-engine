@@ -7,12 +7,17 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+namespace Heavenly::Window
+{
+	struct WindowContext;
+}
+
 namespace Heavenly::Rendering
 {
 
 struct Vertex
 {
-    Math::Vector3 position      {0, 0, 0};
+    Math::Vector3<float> position      {0, 0, 0};
     //Math::Vector4 color         {255, 255, 255, 255};
     //Math::Vector2 uv            {0, 0};
 };
@@ -24,12 +29,6 @@ struct VertexDataDescriptor
     int data_type = GL_FLOAT;
     bool is_normalized = false;
     std::size_t elements = 0;   // NOTE: what was this here for?
-};
-
-struct RenderContext
-{
-    Math::Vector2 window_resolution = Math::Vector2(1280, 720);
-    GLFWwindow* window = nullptr;
 };
 
 class RenderableComponent
@@ -44,11 +43,9 @@ public:
     unsigned int shader_program_id          { 0 };
 };
 
-int Init(int window_width = 1280, int window_height = 720);
+int Init(const Window::WindowContext* ctx = nullptr);
 
 void Tick(float time_delta);
-
-bool ShouldCloseWindow();
 
 void Terminate();
 
