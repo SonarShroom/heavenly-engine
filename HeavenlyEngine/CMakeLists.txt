@@ -23,7 +23,28 @@ set(SPDLOG_DIR ${3RD_PARTY_DIR}/spdlog)
 include_directories(${SPDLOG_DIR}/include/spdlog)
 
 set(IMGUI_DIR ${3RD_PARTY_DIR}/imgui)
-include_directories(${IMGUI_DIR})
+
+add_library(imgui STATIC
+	${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+	${IMGUI_DIR}/imgui_widgets.cpp
+	${IMGUI_DIR}/imgui_demo.cpp
+	${IMGUI_DIR}/imgui_tables.cpp
+
+    # included while we use some imgui helper functions
+	${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+	${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(imgui PUBLIC
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
+)
+
+target_link_libraries(imgui PRIVATE
+	glad
+	glfw
+)
 
 set(GLAD_DIR thirdparty/glad)
 add_library("glad" ${GLAD_DIR}/src/glad.c)
@@ -56,16 +77,6 @@ add_library(${ENGINE_LIB}
     ${SRC_DIR}/graphics/private/Rect.cpp
     ${SRC_DIR}/logging/private/LogManager.cpp
     ${SRC_DIR}/window/private/Window.cpp
-
-    ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_draw.cpp
-    ${IMGUI_DIR}/imgui_widgets.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp
-    ${IMGUI_DIR}/imgui_tables.cpp
-
-    # Included while we use some ImGui helper functions
-    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(${ENGINE_LIB} PRIVATE
@@ -76,8 +87,6 @@ target_include_directories(${ENGINE_LIB} PRIVATE
     ${SRC_DIR}/window
 
     ${GLAD_DIR}/include
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
 )
 
 configure_file(
@@ -92,11 +101,17 @@ if(NOT TARGET spdlog)
 endif()
 
 target_link_libraries(${ENGINE_LIB} PRIVATE
+	imgui
     glad
     glfw
     spdlog::spdlog
 )
 
-target_compile_features(${ENGINE_LIB} PUBLIC cxx_std_17)
+target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)
 
 set_target_properties(${ENGINE_LIB} PROPERTIES CXX_STANDARD 20)
+
+target_compile_options(${ENGINE_LIB} PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
+)
