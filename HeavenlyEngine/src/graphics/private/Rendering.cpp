@@ -1,8 +1,5 @@
 #include "Rendering.h"
 
-#include <iostream>
-
-#include "Rect.h"
 #include "GUI.h"
 #include "LogManager.h"
 #include "Window.h"
@@ -10,35 +7,35 @@
 namespace Heavenly::Rendering
 {
 
-std::vector<RenderableComponent*> m_renderableComponents;
+//std::vector<RenderableComponent*> m_renderableComponents;
 
-RenderableComponent::RenderableComponent()
-{
-	glGenVertexArrays(1, &vertex_array_object_id);
-	glGenBuffers(1, &vertex_buffer_object_id);
-}
+// RenderableComponent::RenderableComponent()
+// {
+// 	glGenVertexArrays(1, &vertex_array_object_id);
+// 	glGenBuffers(1, &vertex_buffer_object_id);
+// }
 
-void RenderableComponent::SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors)
-{
-	glBindVertexArray(vertex_array_object_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_id);
-	glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
+// void RenderableComponent::SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors)
+// {
+// 	glBindVertexArray(vertex_array_object_id);
+// 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_id);
+// 	glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
 
-	unsigned int current_data_descriptor = 0;
-	for(auto descriptor : data_descriptors)
-	{
-		glVertexAttribPointer(
-			current_data_descriptor,
-			descriptor.data_size,
-			descriptor.data_type,
-			descriptor.is_normalized ? GL_TRUE : GL_FALSE,
-			3 * sizeof(float),
-			(void*)0
-		);
-		glEnableVertexAttribArray(current_data_descriptor);
-		current_data_descriptor++;
-	}
-}
+// 	unsigned int current_data_descriptor = 0;
+// 	for(auto descriptor : data_descriptors)
+// 	{
+// 		glVertexAttribPointer(
+// 			current_data_descriptor,
+// 			descriptor.data_size,
+// 			descriptor.data_type,
+// 			descriptor.is_normalized ? GL_TRUE : GL_FALSE,
+// 			3 * sizeof(float),
+// 			(void*)0
+// 		);
+// 		glEnableVertexAttribArray(current_data_descriptor);
+// 		current_data_descriptor++;
+// 	}
+// }
 
 int Init(const Window::WindowContext* ctx)
 {
@@ -46,25 +43,37 @@ int Init(const Window::WindowContext* ctx)
 	return 0;
 }
 
+void Tick()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// for(auto* renderable : m_renderableComponents)
+	// {
+	// 	glUseProgram(renderable->shader_program_id);
+	// 	glBindVertexArray(renderable->vertex_array_object_id);
+	// 	glDrawArrays(GL_TRIANGLES, 0, 3);
+	// }
+
+	GUI::ShowDevGui();
+
+	Window::SwapBuffers();
+}
+
 void Terminate()
 {
 	GUI::Terminate();
 }
 
-void Tick(float time_delta)
+std::vector<unsigned int> InitBuffers(const unsigned int numBuffers)
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	std::vector<unsigned int> _bufferObjIds(numBuffers, 0);
+	glGenBuffers(numBuffers, _bufferObjIds.data());
+	return _bufferObjIds;
+}
 
-	for(auto* renderable : m_renderableComponents)
-	{
-		glUseProgram(renderable->shader_program_id);
-		glBindVertexArray(renderable->vertex_array_object_id);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	}
-
-	GUI::ShowDevGui();
-
-	Window::SwapBuffers();
+void DeleteBuffers(const std::vector<unsigned int>& bufferIds)
+{
+	glDeleteBuffers(bufferIds.size(), bufferIds.data());
 }
 
 bool RegisterNewVertexShader(const char* shader_source, int& shaderId)
@@ -134,15 +143,15 @@ bool CheckShaderProgramLinkingError(const int shader_program_id)
 
 void CreateRect()
 {
-	Rect* new_rect = new Rect();
-	m_renderableComponents.push_back(new_rect->GetRenderableComponent());
+	// Rect* new_rect = new Rect();
+	// m_renderableComponents.push_back(new_rect->GetRenderableComponent());
 }
 
-void CreateRect(const int shader_program_id)
+void CreateRect([[maybe_unused]] const int shader_program_id)
 {
-	Rect* new_rect = new Rect();
-	new_rect->SetShader(shader_program_id);
-	m_renderableComponents.push_back(new_rect->GetRenderableComponent());
+	// Rect* new_rect = new Rect();
+	// new_rect->SetShader(shader_program_id);
+	// m_renderableComponents.push_back(new_rect->GetRenderableComponent());
 }
 
 }

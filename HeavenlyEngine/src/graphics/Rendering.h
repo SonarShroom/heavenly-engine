@@ -31,23 +31,27 @@ struct VertexDataDescriptor
     std::size_t elements = 0;   // NOTE: what was this here for?
 };
 
-class RenderableComponent
-{
-public:
-    RenderableComponent();
-
-    void SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors);
-
-    unsigned int vertex_buffer_object_id    { 0 };
-    unsigned int vertex_array_object_id     { 0 };
-    unsigned int shader_program_id          { 0 };
-};
+//class RenderableComponent
+//{
+//public:
+//    RenderableComponent();
+//
+//    void SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors);
+//
+//    unsigned int vertex_buffer_object_id    { 0 };
+//    unsigned int vertex_array_object_id     { 0 };
+//    unsigned int shader_program_id          { 0 };
+//};
 
 int Init(const Window::WindowContext* ctx = nullptr);
 
-void Tick(float time_delta);
+void Tick();
 
 void Terminate();
+
+std::vector<unsigned int> InitBuffers(const unsigned int numBuffers);
+
+void DeleteBuffers(const std::vector<unsigned int>& bufferIds);
 
 bool RegisterNewVertexShader(const char* shader_source, int& shader_id);
 
