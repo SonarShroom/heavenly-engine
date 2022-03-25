@@ -53,6 +53,10 @@ std::vector<unsigned int> InitBuffers(const unsigned int numBuffers);
 
 void DeleteBuffers(const std::vector<unsigned int>& bufferIds);
 
+void BindBuffer(const unsigned int bufferId);
+
+void BufferStaticData(const unsigned int dataSize, const void* data);
+
 bool RegisterNewVertexShader(const char* shader_source, int& shader_id);
 
 bool RegisterNewFragmentShader(const char* shader_source, int& shader_id);

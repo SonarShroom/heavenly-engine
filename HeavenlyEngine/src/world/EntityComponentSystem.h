@@ -59,7 +59,7 @@ private:
 	const Entity* entity = nullptr;
 };
 
-class TransformComponent : public Component
+struct TransformComponent : public Component
 {
 	Math::Vector3<float> position = {0, 0, 0};
 	Math::Vector3<float> rotation = {0, 0, 0};
@@ -115,7 +115,6 @@ void Terminate();
 void RegisterComponentInitFunc(const std::type_info& typeInfo, const std::function<void(Component*)> initFunc);
 
 template<typename Component_t>
-requires std::is_base_of_v<Component, Component_t>
 Component_t* CreateComponent(Entity* entity)
 {
 	auto* _world = const_cast<WorldAdmin*>(entity->GetWorld());

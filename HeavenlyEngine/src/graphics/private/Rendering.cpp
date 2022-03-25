@@ -76,6 +76,16 @@ void DeleteBuffers(const std::vector<unsigned int>& bufferIds)
 	glDeleteBuffers(bufferIds.size(), bufferIds.data());
 }
 
+void BindBuffer(const unsigned int bufferId)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, bufferId);
+}
+
+void BufferStaticData(const unsigned int dataSize, const void* data)
+{
+	glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
+}
+
 bool RegisterNewVertexShader(const char* shader_source, int& shaderId)
 {
 	shaderId = glCreateShader(GL_VERTEX_SHADER);

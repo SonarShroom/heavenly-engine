@@ -77,6 +77,7 @@ add_library(${ENGINE_LIB}
     ${SRC_DIR}/window/private/Window.cpp
     ${SRC_DIR}/world/private/EntityComponentSystem.cpp
     ${SRC_DIR}/world/private/GUIComponents.cpp
+	${SRC_DIR}/world/private/MaterialComponent.cpp
 )
 
 target_include_directories(${ENGINE_LIB} PRIVATE

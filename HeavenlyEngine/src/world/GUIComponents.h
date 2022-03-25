@@ -16,6 +16,8 @@ struct RectComponent : public Component
 	Math::Vector2<int> size;
 	Math::Vector4<int> color;
 	
+	bool drawDirty = true;
+	
 	const unsigned int vbo = 0;
 };
 
