@@ -47,6 +47,7 @@ cmake-build*/
 .idea/
 
 # KDevelop specific files
+*.kdev4
 .kdev4/
 
 HeavenlyEngine/src/core/HeavenlyVersion.h
