@@ -34,10 +34,20 @@
 # Build output
 build/
 
+# CMake Build caches
+cmake-build*/
+
 # Visual Studio Code specific files
 .vscode/
 
 # Visual Studio specific files
 .vs/
+
+# CLion specific files
+.idea/
+
+# KDevelop specific files
+*.kdev4
+.kdev4/
 
 HeavenlyEngine/src/core/HeavenlyVersion.h

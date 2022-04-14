@@ -71,12 +71,13 @@ add_subdirectory(
 
 add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Core.cpp
-    ${SRC_DIR}/core/private/EntityComponentSystem.cpp
     ${SRC_DIR}/graphics/private/GUI.cpp
     ${SRC_DIR}/graphics/private/Rendering.cpp
-    ${SRC_DIR}/graphics/private/Rect.cpp
     ${SRC_DIR}/logging/private/LogManager.cpp
     ${SRC_DIR}/window/private/Window.cpp
+    ${SRC_DIR}/world/private/EntityComponentSystem.cpp
+    ${SRC_DIR}/world/private/GUIComponents.cpp
+	${SRC_DIR}/world/private/RenderingComponents.cpp
 )
 
 target_include_directories(${ENGINE_LIB} PRIVATE
@@ -85,6 +86,7 @@ target_include_directories(${ENGINE_LIB} PRIVATE
     ${SRC_DIR}/math
     ${SRC_DIR}/logging
     ${SRC_DIR}/window
+	${SRC_DIR}/world
 
     ${GLAD_DIR}/include
 )
