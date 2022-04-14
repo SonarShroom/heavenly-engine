@@ -7,42 +7,41 @@
 namespace Heavenly::World
 {
 
-RectComponent::RectComponent(const Entity* e) : Component(e), vbo(Rendering::InitBuffers(1)[0]) {}
+RectComponent::RectComponent(const Entity* e)
+	: Component(e)
+	, vertexBufferId(Rendering::InitVertexBufferObjects(1)[0])
+	, vertexArrayId(Rendering::InitVertexArrayObjects(1)[0]) {}
 
 RectComponent::~RectComponent()
 {
-	Rendering::DeleteBuffers({vbo});
+	Rendering::DeleteBuffers({vertexBufferId});
+	Rendering::DeleteArrays({vertexArrayId});
 }
 
-void RectRendererSystem(RectComponent* rectComponent, [[maybe_unused]] const float timeDelta)
+void RectRendererSystem([[maybe_unused]] RectComponent* rectComponent, [[maybe_unused]] const float timeDelta)
 {
-	if (!rectComponent->drawDirty)
+	if (rectComponent->drawDirty)
 	{
+		Rendering::BindArray(rectComponent->vertexArrayId);
 		const auto _transformPos = rectComponent->GetSibling<TransformComponent>()->position;
 		const auto _size = rectComponent->size;
-		Rendering::BindBuffer(rectComponent->vbo);
-		std::array<Math::Vector3<float>, 4> _vertexPos =
+		Rendering::BindBuffer(rectComponent->vertexBufferId);
+		std::array<float, 9> _vertexPos =
 		{
-			_transformPos,
-			{_transformPos.x, _transformPos.y + _size.y, _transformPos.z},
-			{_transformPos.x + _size.x, _transformPos.y, _transformPos.z},
-			{_transformPos.x + _size.x, _transformPos.y + _size.y, _transformPos.z}
+			_transformPos.x, _transformPos.y, _transformPos.z,
+			_transformPos.x, _transformPos.y - _size.y, _transformPos.z,
+			_transformPos.x + _size.x, _transformPos.y, _transformPos.z
+			// {_transformPos.x + _size.x, _transformPos.y - _size.y, _transformPos.z}
 		};
-		Rendering::BufferStaticData(sizeof(Math::Vector3<float>) * 4, _vertexPos.data());
-		rectComponent->drawDirty = false;
-		return;
+		Rendering::BufferStaticData(sizeof(_vertexPos), _vertexPos.data());
+		Rendering::SetVertexAttribute(0, 3, 3 * sizeof(float));
+		// rectComponent->drawDirty = false;
 	}
 
-	glUseProgram(renderable->shader_program_id);
-	glBindVertexArray(renderable->vertex_array_object_id);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-
 	// TODO: Render rect using Rendering module;
-
-	glBindVertexArray(vertex_array_object_id);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_id);
-	glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
 	
+	Rendering::BindArray(rectComponent->vertexArrayId);
+	Rendering::DrawArrays(0, 3);
 }
 
 } // Heavenly::World

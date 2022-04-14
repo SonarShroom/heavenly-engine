@@ -13,12 +13,13 @@ struct RectComponent : public Component
 	
 	~RectComponent();
 
-	Math::Vector2<int> size;
-	Math::Vector4<int> color;
+	Math::Vector2<float> size;
+	Math::Vector4<float> color;
 	
 	bool drawDirty = true;
 	
-	const unsigned int vbo = 0;
+	const unsigned int vertexBufferId = 0;
+	const unsigned int vertexArrayId = 0;
 };
 
 void RectRendererSystem(RectComponent* rectComponent, [[maybe_unused]] const float timeDelta);

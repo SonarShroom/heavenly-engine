@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <string>
-#include <typeinfo>
 #include <vector>
 
 #include "MathBaseTypes.h"
@@ -15,18 +14,13 @@ struct WorldAdmin;
 
 class Component;
 
-class Entity final
+struct Entity final
 {
-public:
 	Entity() = delete;
-	~Entity() = delete;
+	~Entity() = default;
+
 	explicit Entity(const WorldAdmin* world, const std::string& id) : world(world), id(id) { }
 
-	inline const WorldAdmin* GetWorld() const { return world; }
-	inline std::string GetId() const { return id; }
-	inline const std::vector<Component*> GetComponents() const { return components; }
-
-private:
 	const WorldAdmin* world = nullptr;
 	std::string id;
 	std::vector<Component*> components;
@@ -38,13 +32,15 @@ public:
 	explicit Component(const Entity* e) : entity(e) {}
 	
 	virtual ~Component() = default;
+	
+	inline const Entity* GetEntity() const { return entity; }
 
 	template <typename Component_t>
 	requires std::is_base_of_v<Component, Component_t>
 	Component_t* GetSibling() const
 	{
 		// TODO: Get component on same entity with this type;
-		for (auto* _c : entity->GetComponents())
+		for (auto* _c : entity->components)
 		{
 			auto* _casted = dynamic_cast<Component_t*>(_c);
 			if (_casted)
@@ -59,8 +55,10 @@ private:
 	const Entity* entity = nullptr;
 };
 
-struct TransformComponent : public Component
+struct TransformComponent final : public Component
 {
+	TransformComponent(Entity* e) : Component(e) { }
+
 	Math::Vector3<float> position = {0, 0, 0};
 	Math::Vector3<float> rotation = {0, 0, 0};
 	Math::Vector3<float> scale = {0, 0, 0};
@@ -70,6 +68,9 @@ struct WorldAdmin
 {
 	using SystemTickFunc = std::function<void(float)>;
 	using ComponentInitFunc = std::function<void(Component*)>;
+
+	WorldAdmin() = default;
+	~WorldAdmin() = default;
 
 	std::vector<Entity*> entities;
 	std::vector<Component*> components;
@@ -100,28 +101,45 @@ public:
 };
 */
 
+// Admin lifetime functions
 WorldAdmin* CreateWorld();
+
+void DestroyWorld(WorldAdmin* admin);
+
+void Tick(WorldAdmin* world, const float deltaTime);
+
+void Terminate();
 
 // Entity Functions
 Entity* CreateEntity(WorldAdmin* world, const std::string& id);
 
 void DestroyEntity(const int worldID, const unsigned int entity_id);
 
-// Admin lifetime functions
-void Tick(WorldAdmin* world, const float deltaTime);
-
-void Terminate();
-
-void RegisterComponentInitFunc(const std::type_info& typeInfo, const std::function<void(Component*)> initFunc);
+template<typename Component_t>
+Component_t* GetComponent(Entity* entity)
+{
+	for (auto* _c : entity->components)
+	{
+		auto* _casted = dynamic_cast<Component_t*>(_c);
+		if (_casted)
+		{
+			return _casted;
+		}
+	}
+	return nullptr;
+}
 
 template<typename Component_t>
 Component_t* CreateComponent(Entity* entity)
 {
-	auto* _world = const_cast<WorldAdmin*>(entity->GetWorld());
+	auto* _world = const_cast<WorldAdmin*>(entity->world);
 	auto* _newComponent = new Component_t(entity);
 	_world->components.push_back(_newComponent);
+	entity->components.push_back(_newComponent);
 	return _newComponent;
 }
+
+void DestroyComponent(Component* component);
 
 template<typename Component_t>
 requires std::is_base_of_v<Component, Component_t>

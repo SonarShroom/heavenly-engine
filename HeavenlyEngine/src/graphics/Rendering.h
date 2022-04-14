@@ -49,19 +49,36 @@ void Tick();
 
 void Terminate();
 
-std::vector<unsigned int> InitBuffers(const unsigned int numBuffers);
-
-void DeleteBuffers(const std::vector<unsigned int>& bufferIds);
+std::vector<unsigned int> InitVertexBufferObjects(const unsigned int numBuffers);
 
 void BindBuffer(const unsigned int bufferId);
 
+void DeleteBuffers(const std::vector<unsigned int>& bufferIds);
+
+std::vector<unsigned int> InitVertexArrayObjects(const unsigned int numBuffers);
+
+void BindArray(const unsigned int arrayId);
+
+void DrawArrays(const unsigned int firstElem, const unsigned int count);
+
+void DeleteArrays(const std::vector<unsigned int>& arrayIds);
+
+// TODO: Remove these once batch rendering is implemented, since they most likely won't be needed.
+
 void BufferStaticData(const unsigned int dataSize, const void* data);
 
-bool RegisterNewVertexShader(const char* shader_source, int& shader_id);
+void SetVertexAttribute(const unsigned int index, const unsigned int dataSize, const unsigned int stride);
 
-bool RegisterNewFragmentShader(const char* shader_source, int& shader_id);
+void UseShaderProgram(const unsigned int shaderProgram);
 
-bool RegisterNewShaderProgram(int vertex_shader_id, int frag_shader_id, int& shader_program_id);
+// Shader compilation functions
+bool RegisterNewVertexShader(const std::string& shader_source, unsigned int& shader_id);
+
+bool RegisterNewFragmentShader(const std::string& shader_source, unsigned int& shader_id);
+
+void DeleteShader(const unsigned int shaderId);
+
+bool RegisterNewShaderProgram(const unsigned int vertex_shader_id, const unsigned int frag_shader_id, unsigned int& shader_program_id);
 
 //Creates rect at the center of the screen
 void CreateRect();
