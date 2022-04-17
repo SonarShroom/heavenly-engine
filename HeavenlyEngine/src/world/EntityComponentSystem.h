@@ -113,7 +113,7 @@ void Terminate();
 // Entity Functions
 Entity* CreateEntity(WorldAdmin* world, const std::string& id);
 
-void DestroyEntity(const int worldID, const unsigned int entity_id);
+void DestroyEntity(Entity* entity);
 
 template<typename Component_t>
 Component_t* GetComponent(Entity* entity)
