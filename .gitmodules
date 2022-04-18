@@ -9,3 +9,7 @@
 [submodule "HeavenlyEngine/thirdparty/fmt"]
 	path = HeavenlyEngine/thirdparty/fmt
 	url = git@github.com:fmtlib/fmt.git
+[submodule "HeavenlyEngine/thirdparty/catch2"]
+	path = HeavenlyEngine/thirdparty/catch2
+	url = git@github.com:catchorg/Catch2.git
+	branch = v2.13.9

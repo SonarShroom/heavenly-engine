@@ -78,6 +78,7 @@ void DestroyEntity(Entity* entity)
 	{
 		std::erase(_world->components, _entityComp);
 	}
+	delete entity;
 }
 
 void DestroyComponent(Component* comp)

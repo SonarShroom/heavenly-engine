@@ -4,6 +4,8 @@ project(HeavenlyEngine
         LANGUAGES CXX
 )
 
+option(HEAVENLY_TESTS "Enables Heavenly Engine tests target.")
+
 # TODO: Once the engine part has been put into a separate repo, this work dir must be changed.
 execute_process(
     COMMAND
@@ -80,7 +82,7 @@ add_library(${ENGINE_LIB}
 	${SRC_DIR}/world/private/RenderingComponents.cpp
 )
 
-target_include_directories(${ENGINE_LIB} PRIVATE
+target_include_directories(${ENGINE_LIB} PUBLIC
     ${SRC_DIR}/core
     ${SRC_DIR}/graphics
     ${SRC_DIR}/math
@@ -117,3 +119,20 @@ target_compile_options(${ENGINE_LIB} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
+
+if(HEAVENLY_TESTS)
+	message(STATUS "Heavenly Engine tests enabled. Importing Catch2.")
+	add_subdirectory(${ENGINE_DIR}/thirdparty/catch2)
+
+	set(TESTS_DIR ${ENGINE_DIR}/tests)
+	set(TESTS_EXE ${ENGINE_LIB}Tests)
+
+	add_executable(${TESTS_EXE}
+		${TESTS_DIR}/main.cpp
+		${TESTS_DIR}/world/EntityComponentSystemTests.cpp
+	)
+	target_link_libraries(${TESTS_EXE} PRIVATE ${ENGINE_LIB} Catch2)
+
+	target_compile_features(${TESTS_EXE} PRIVATE cxx_std_20)
+	set_target_properties(${TESTS_EXE} PROPERTIES CXX_STANDARD 20)
+endif(HEAVENLY_TESTS)
