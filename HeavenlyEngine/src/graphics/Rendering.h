@@ -15,35 +15,7 @@ namespace Heavenly::Window
 namespace Heavenly::Rendering
 {
 
-struct Vertex
-{
-    Math::Vector3<float> position      {0, 0, 0};
-    //Math::Vector4 color         {255, 255, 255, 255};
-    //Math::Vector2 uv            {0, 0};
-};
-
-struct VertexDataDescriptor
-{
-    std::size_t data_size = 0;
-    std::size_t data_offset = 0;
-    int data_type = GL_FLOAT;
-    bool is_normalized = false;
-    std::size_t elements = 0;   // NOTE: what was this here for?
-};
-
-//class RenderableComponent
-//{
-//public:
-//    RenderableComponent();
-//
-//    void SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors);
-//
-//    unsigned int vertex_buffer_object_id    { 0 };
-//    unsigned int vertex_array_object_id     { 0 };
-//    unsigned int shader_program_id          { 0 };
-//};
-
-int Init(const Window::WindowContext* ctx = nullptr);
+bool Init(const Window::WindowContext* ctx = nullptr);
 
 void Tick();
 

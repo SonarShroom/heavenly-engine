@@ -1,50 +1,71 @@
 #include "Rendering.h"
 
+#include "BatchRendering.hpp"
 #include "GUI.h"
-#include "LogManager.h"
-#include "Window.h"
+#include "logging/LogManager.h"
+#include "RenderPrimitives.h"
+#include "window/Window.h"
 
 namespace Heavenly::Rendering
 {
 
-//std::vector<RenderableComponent*> m_renderableComponents;
+constexpr unsigned int VERTEX_SIZE = 7 * sizeof(float);
 
-// RenderableComponent::RenderableComponent()
-// {
-// 	glGenVertexArrays(1, &vertex_array_object_id);
-// 	glGenBuffers(1, &vertex_buffer_object_id);
-// }
+unsigned int p_VAO = 0;
+unsigned int p_VBO = 0;
+unsigned int p_EBO = 0;
 
-// void RenderableComponent::SetVBOData(void* data, std::size_t data_size, std::vector<VertexDataDescriptor> data_descriptors)
-// {
-// 	glBindVertexArray(vertex_array_object_id);
-// 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_object_id);
-// 	glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
+std::vector<RenderCommand> p_renderCommands;
 
-// 	unsigned int current_data_descriptor = 0;
-// 	for(auto descriptor : data_descriptors)
-// 	{
-// 		glVertexAttribPointer(
-// 			current_data_descriptor,
-// 			descriptor.data_size,
-// 			descriptor.data_type,
-// 			descriptor.is_normalized ? GL_TRUE : GL_FALSE,
-// 			3 * sizeof(float),
-// 			(void*)0
-// 		);
-// 		glEnableVertexAttribArray(current_data_descriptor);
-// 		current_data_descriptor++;
-// 	}
-// }
-
-int Init(const Window::WindowContext* ctx)
+bool Init(const Window::WindowContext* ctx)
 {
+	glGenVertexArrays(1, &p_VAO);
+	glGenBuffers(1, &p_VBO);
+	glGenBuffers(1, &p_EBO);
+	
+	glBindVertexArray(p_VAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, (const void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, VERTEX_SIZE, (const void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	
 	GUI::InitDevGui(ctx);
-	return 0;
+	return true;
 }
 
 void Tick()
 {
+	// Calculate needed allocation for vertexes
+	unsigned int _numberVertex = 0;
+	unsigned int _numberElements = 0;
+	for (const auto& _command : p_renderCommands)
+	{
+		switch (_command.type) {
+			case RenderCommand::Type::DRAW_QUAD:
+			{
+				_numberVertex += 4;
+				_numberElements += 6;
+			} break;
+			case RenderCommand::Type::DRAW_TRIANGLE:
+			{
+				_numberVertex += 3;
+				_numberElements += 3;
+			} break;
+			default:
+			{
+				HV_LOG_ERROR("Invalid render command passed to renderer.");
+			} break;
+		}
+	}
+
+	// Vertex data = [x, y, z],[r, g, b, a]
+	float* _vertexData = new float[_numberVertex * 7];
+	unsigned int* _elements = new unsigned int[_numberElements];
+
+	glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_vertexData), _vertexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, p_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_elements), _elements, GL_STATIC_DRAW);
 	GUI::ShowDevGui();
 
 	Window::SwapBuffers();
