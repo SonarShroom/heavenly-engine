@@ -12,13 +12,11 @@ struct RenderCommand
 		DRAW_QUAD = 0,
 		DRAW_TRIANGLE,
 		SIZE
-	};
+	} type;
 	union Payload {
 		Triangle triangle;
 		Quad quad;
 	} payload;
-
-	Type type;
 };
 
 } // Heavenly::Rendering

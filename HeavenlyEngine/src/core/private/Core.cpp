@@ -46,29 +46,33 @@ int Run([[maybe_unused]] AppRuntime* app)
 	auto* _world = World::CreateWorld();
 	auto* _rectEntity = World::CreateEntity(_world, "rect");
 	auto* _rectTransform = World::GetComponent<World::TransformComponent>(_rectEntity);
-	_rectTransform->position = {-.1f, .1f, 0.f};
+	_rectTransform->position = {-.2f, .1f, 0.f};
 
 	auto* _rectComponent = World::CreateComponent<World::RectComponent>(_rectEntity);
 	_rectComponent->size.x = .2f;
 	_rectComponent->size.y = .2f;
+	_rectComponent->color = {1.f, .5f, .2f, 1.0f};
 
 	auto* _matComponent = World::CreateComponent<World::MaterialComponent>(_rectEntity);
 	_matComponent->vertexShader = R"(
 		#version 330 core
 		layout (location = 0) in vec3 aPos;
+		layout (location = 1) in vec4 aCol;
+		out vec4 vCol;
 		void main()
 		{
-		   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+			vCol = aCol;
+			gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
 		}
 	)";
 
 	_matComponent->fragmentShader = R"(
 		#version 330 core
-		//layout (location = 1) in vec4 fColor
+		in vec4 vCol;
 		out vec4 FragColor;
 		void main()
 		{
-		   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+		   FragColor = vCol;
 		}
 	)";
 

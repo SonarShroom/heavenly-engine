@@ -116,7 +116,7 @@ target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)
 set_target_properties(${ENGINE_LIB} PROPERTIES CXX_STANDARD 20)
 
 target_compile_options(${ENGINE_LIB} PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /Zc:preprocessor>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 

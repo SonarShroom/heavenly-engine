@@ -5,25 +5,25 @@
 namespace Heavenly::Logging
 {
 
-std::shared_ptr<spdlog::logger> _engineLogger;
-std::shared_ptr<spdlog::logger> _appLogger;
+std::shared_ptr<spdlog::logger> p_engineLogger;
+std::shared_ptr<spdlog::logger> p_appLogger;
 
 void Init() {
 
     // Set pattern for out messages:
     spdlog::set_pattern("%^[%Y-%m-%d %H:%M:%S.%e][%n][%l]: %v %$");
-	_engineLogger = spdlog::stdout_color_mt("Heavenly");
-	_appLogger = spdlog::stdout_color_mt("App");
+	p_engineLogger = spdlog::stdout_color_mt("Heavenly");
+	p_appLogger = spdlog::stdout_color_mt("App");
 }
 
 spdlog::logger* GetEngineLogger()
 {
-	return _engineLogger.get();
+	return p_engineLogger.get();
 }
 
 spdlog::logger* GetAppLogger()
 {
-	return _appLogger.get();
+	return p_appLogger.get();
 }
 
 }
