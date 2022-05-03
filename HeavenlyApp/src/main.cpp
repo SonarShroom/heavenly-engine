@@ -1,16 +1,22 @@
 #include <Heavenly.h>
 
-Heavenly::AppRuntime* CreateAppRuntime()
+#include "appruntime.h"
+
+Heavenly::Core::AppRuntime* CreateAppRuntime()
 {
-	// TODO: Create app lifetime functions. For now they are still inside the engine.
-	auto* _appRuntime = new Heavenly::AppRuntime();
-	return _appRuntime;
+	auto* _app = new Heavenly::Core::AppRuntime();
+
+	_app->bootFunction = HeavenlyApp::App::OnBoot;
+	_app->updateFunction = HeavenlyApp::App::OnUpdate;
+	_app->drawImGuiFunction = HeavenlyApp::App::OnDrawImGui;
+	
+	return _app;
 }
 
-int main()
+int main(int argc, char** argv)
 {
-	auto* _app = CreateAppRuntime();
-	Heavenly::Run(_app);
+	auto _app = CreateAppRuntime();
+	Heavenly::Run(argc, argv, _app);
 	delete _app;
 	return 0;
 }

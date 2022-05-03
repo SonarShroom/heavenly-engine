@@ -38,6 +38,8 @@ const WindowContext* GetWindowContext();
 
 void SetWindowErrorCallback(const std::function<void(int, const char*)>& errorCallback);
 
+void SetMainWindowShouldClose(const bool shouldClose);
+
 bool ShouldClose();
 
 void SwapBuffers();

@@ -110,6 +110,8 @@ void Tick(WorldAdmin* world, const float deltaTime);
 
 void Terminate();
 
+void IterateWorldEntities(unsigned int worldIndex, void(*visitor)(Entity*));
+
 // Entity Functions
 Entity* CreateEntity(WorldAdmin* world, const std::string& id);
 

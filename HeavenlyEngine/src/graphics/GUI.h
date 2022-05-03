@@ -10,11 +10,15 @@ struct WindowContext;
 
 namespace Heavenly::GUI
 {
+
 void InitDevGui(const Window::WindowContext* ctx = nullptr);
 
-void ShowDevGui();
+void RegisterImGuiRenderFunction(void(*renderFunction)(const float));
+
+void ShowDevGui(const float deltaTime = 0.f);
 
 void Terminate();
+
 }
 
 #endif //GUI_H_

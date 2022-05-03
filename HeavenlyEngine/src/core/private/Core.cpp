@@ -3,20 +3,22 @@
 #include <iostream>
 #include <chrono>
 
-#include "AppRuntime.h"
-#include "EntityComponentSystem.h"
-#include "HeavenlyVersion.h"
-#include "LogManager.h"
-#include "Rendering.h"
-#include "Window.h"
-
+#include "core/AppRuntime.h"
+#include "core/HeavenlyVersion.h"
+#include "graphics/GUI.h"
+#include "logging/LogManager.h"
+#include "graphics/Rendering.h"
+#include "window/Window.h"
+#include "world/EntityComponentSystem.h"
 #include "world/GUIComponents.h"
 #include "world/RenderingComponents.h"
 
 namespace Heavenly
 {
 
-void InitializeEngine()
+Core::AppRuntime* p_app = nullptr;
+
+void InitializeEngine(int argc, char** argv)
 {
 	Logging::Init();
 
@@ -27,21 +29,33 @@ void InitializeEngine()
 	}
 
 	Window::CreateWindow();
-	Rendering::Init(Window::GetWindowContext());
+	auto* _windowCtx = Window::GetWindowContext();
+	Rendering::Init();
+	GUI::InitDevGui(_windowCtx);
+
+	GUI::RegisterImGuiRenderFunction(p_app->drawImGuiFunction);
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
+	
+	if (p_app->bootFunction)
+	{
+		p_app->bootFunction(argc, argv);
+	}
 }
 
 void Terminate()
 {
 	Rendering::Terminate();
 	World::Terminate();
+	GUI::Terminate();
 	HV_LOG_INFO("Heavenly Engine shutdown.");
 }
 
-int Run([[maybe_unused]] AppRuntime* app)
+int Run(int argc, char** argv, Core::AppRuntime* app)
 {
-	InitializeEngine();
+	p_app = app;
+
+	InitializeEngine(argc, argv);
 
 	auto* _world = World::CreateWorld();
 	auto* _rectEntity = World::CreateEntity(_world, "rect");
@@ -80,9 +94,13 @@ int Run([[maybe_unused]] AppRuntime* app)
 
 	while (!Window::ShouldClose())
 	{
-		auto deltaTime = (std::chrono::steady_clock::now() - end_frame_time).count();
-		World::Tick(_world, (float)deltaTime);
-		Rendering::Tick();
+		auto deltaTime = static_cast<float>((std::chrono::steady_clock::now() - end_frame_time).count());
+		World::Tick(_world, deltaTime);
+
+		Rendering::Tick(deltaTime);
+		GUI::ShowDevGui(deltaTime);
+
+		Window::SwapBuffers();
 		Window::PollEvents();
 
 		end_frame_time = std::chrono::steady_clock::now();

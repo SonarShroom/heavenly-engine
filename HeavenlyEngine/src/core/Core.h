@@ -3,8 +3,14 @@
 
 namespace Heavenly
 {
-	struct AppRuntime;
-	int Run(AppRuntime* app);
+
+namespace Core
+{
+struct AppRuntime;
+}
+
+int Run(int argc, char**, Core::AppRuntime* app);
+
 }
 
 #endif //HEAVENLY_H_

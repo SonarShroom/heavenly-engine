@@ -121,6 +121,11 @@ void SetWindowErrorCallback(const std::function<void(int, const char*)>& errorCa
 	m_windowErrorCallback = errorCallback;
 }
 
+void SetMainWindowShouldClose(const bool shouldClose)
+{
+	glfwSetWindowShouldClose(m_mainWindowCtx->window, shouldClose);
+}
+
 bool ShouldClose()
 {
 	return glfwWindowShouldClose(m_mainWindowCtx->window) == GLFW_TRUE;

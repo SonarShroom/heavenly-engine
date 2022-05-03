@@ -17,7 +17,7 @@ unsigned int p_EBO = 0;
 
 std::vector<RenderCommand> p_renderCommands;
 
-bool Init(const Window::WindowContext* ctx)
+bool Init()
 {
 	glGenVertexArrays(1, &p_VAO);
 	glGenBuffers(1, &p_VBO);
@@ -34,13 +34,14 @@ bool Init(const Window::WindowContext* ctx)
 	glEnableVertexAttribArray(1);
 	
 	glBindVertexArray(0);
-	
-	GUI::InitDevGui(ctx);
+
 	return true;
 }
 
-void Tick()
+void Tick([[maybe_unused]] const float deltaTime)
 {
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	constexpr auto _addVertexToBuffer = [](float* baseVecPos, const unsigned int nVertex, const Vertex* vertexVec) -> void
 	{
 		// Vertex data = [x, y, z],[r, g, b, a]
@@ -126,12 +127,6 @@ void Tick()
 
 	glBindVertexArray(0);
 
-	GUI::ShowDevGui();
-
-	Window::SwapBuffers();
-
-	glClear(GL_COLOR_BUFFER_BIT);
-
 	delete[] _vertexData;
 	delete[] _elements;
 }
@@ -141,7 +136,6 @@ void Terminate()
 	glDeleteVertexArrays(1, &p_VAO);
 	glDeleteBuffers(1, &p_VBO);
 	glDeleteBuffers(1, &p_EBO);
-	GUI::Terminate();
 }
 
 void EmitQuadCommand(const Quad* quad)

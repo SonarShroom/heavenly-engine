@@ -16,9 +16,9 @@ namespace Heavenly::Window
 namespace Heavenly::Rendering
 {
 
-bool Init(const Window::WindowContext* ctx = nullptr);
+bool Init();
 
-void Tick();
+void Tick(const float deltaTime);
 
 void Terminate();
 

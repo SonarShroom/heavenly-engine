@@ -12,7 +12,7 @@
 namespace Heavenly::World
 {
 
-std::vector<WorldAdmin*> _worlds;
+std::vector<WorldAdmin*> p_worlds;
 
 WorldAdmin* CreateWorld()
 {
@@ -21,9 +21,8 @@ WorldAdmin* CreateWorld()
 		RegisterSystem(world, &MaterialRendererSystem);
 		RegisterSystem(world, &RectRendererSystem);
 	};
-	auto* _newWorld = new WorldAdmin();
+	auto* _newWorld = p_worlds.emplace_back(new WorldAdmin());
 	_worldInit(_newWorld);
-	_worlds.emplace_back(new WorldAdmin());
 	return _newWorld;
 }
 
@@ -55,10 +54,19 @@ void Tick(WorldAdmin* world, const float deltaTime)
 
 void Terminate()
 {
-	HV_LOG_INFO("Removing {} {}.", _worlds.size(), _worlds.size() == 1 ? "world" : "worlds");
-	for (auto* _world : _worlds)
+	HV_LOG_INFO("Removing {} {}.", p_worlds.size(), p_worlds.size() == 1 ? "world" : "worlds");
+	for (auto* _world : p_worlds)
 	{
 		DestroyWorld(_world);
+	}
+}
+
+void IterateWorldEntities(unsigned int worldIndex, void(*visitor)(Entity*))
+{
+	auto _world = p_worlds.at(worldIndex);
+	for (auto* _ent : _world->entities)
+	{
+		visitor(_ent);
 	}
 }
 

@@ -104,7 +104,7 @@ if(NOT TARGET spdlog)
     find_package(spdlog REQUIRED)
 endif()
 
-target_link_libraries(${ENGINE_LIB} PRIVATE
+target_link_libraries(${ENGINE_LIB} PUBLIC
 	imgui
     glad
     glfw
