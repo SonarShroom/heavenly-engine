@@ -40,7 +40,7 @@ void InitDevGui(const Window::WindowContext* ctx)
 	_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 }
 
-void RegisterImGuiRenderFunction(void(*renderFunction)(const float))
+void RegisterImGuiRenderFunction(const std::function<void(const float)>& renderFunction)
 {
 	p_ImGuiRenderFunctions.push_back(renderFunction);
 }
@@ -54,6 +54,7 @@ void ShowDevGui(const float deltaTime)
 	const auto _mainViewport = ImGui::GetMainViewport();
 	const auto _mainDockspaceID = ImGui::GetID("Root Dockspace");
 	ImGui::SetNextWindowPos(_mainViewport->WorkPos);
+	ImGui::SetNextWindowSize(_mainViewport->WorkSize);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -68,7 +69,7 @@ void ShowDevGui(const float deltaTime)
 		renderFunc(deltaTime);
 	}
 
-	ImGui::End();	
+	ImGui::End();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

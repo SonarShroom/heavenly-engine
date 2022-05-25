@@ -1,4 +1,4 @@
-#include "Core.h"
+#include "core/Engine.h"
 
 #include <iostream>
 #include <chrono>
@@ -33,14 +33,11 @@ void InitializeEngine(int argc, char** argv)
 	Rendering::Init();
 	GUI::InitDevGui(_windowCtx);
 
-	GUI::RegisterImGuiRenderFunction(p_app->drawImGuiFunction);
+	GUI::RegisterImGuiRenderFunction([](const float deltaTime) {p_app->OnDrawImGui(deltaTime);});
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 	
-	if (p_app->bootFunction)
-	{
-		p_app->bootFunction(argc, argv);
-	}
+	p_app->OnBoot(argc, argv);
 }
 
 void Terminate()

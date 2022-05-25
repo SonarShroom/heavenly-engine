@@ -38,7 +38,7 @@ void ShowSceneExplorer()
 			if (ImGui::TreeNode(e->id.c_str()))
 			{
 				ImGui::TreePop();
-			}	
+			}
 		});
 	}
 	ImGui::End();

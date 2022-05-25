@@ -43,6 +43,10 @@ target_include_directories(imgui PUBLIC
     ${IMGUI_DIR}/backends
 )
 
+target_compile_definitions(imgui PUBLIC
+	IMGUI_DISABLE_OBSOLETE_FUNCTIONS
+)
+
 target_link_libraries(imgui PRIVATE
 	glad
 	glfw
@@ -72,7 +76,7 @@ add_subdirectory(
 )
 
 add_library(${ENGINE_LIB}
-    ${SRC_DIR}/core/private/Core.cpp
+    ${SRC_DIR}/core/private/Engine.cpp
     ${SRC_DIR}/graphics/private/GUI.cpp
     ${SRC_DIR}/graphics/private/Rendering.cpp
     ${SRC_DIR}/logging/private/LogManager.cpp

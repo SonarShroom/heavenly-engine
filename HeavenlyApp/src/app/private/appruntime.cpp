@@ -7,18 +7,19 @@
 namespace HeavenlyApp::App
 {
 
-void OnBoot([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
+void Runtime::OnBoot([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
 
 }
 
-void OnUpdate([[maybe_unused]] const float deltaTime)
+void Runtime::OnUpdate([[maybe_unused]] const float deltaTime)
 {
 
 }
 
-void OnDrawImGui([[maybe_unused]] const float deltaTime)
+void Runtime::OnDrawImGui([[maybe_unused]] const float deltaTime)
 {
+	// ImGui::ShowDemoWindow();
 	ShowMainMenuBar();
 	ShowSceneExplorer();
 	ShowInspector();

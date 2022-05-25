@@ -3,15 +3,15 @@
 namespace Heavenly::Core
 {
 
-struct AppRuntime
+class AppRuntime
 {
-	using BootFunc = void(*)(int argc, char** argv);
-	using UpdateFunc = void(*)(const float deltaTime);
-	using DrawImGuiFunc = void(*)(const float deltaTime);
+public:
+	AppRuntime() = default;
+	virtual ~AppRuntime() = default;
 
-	BootFunc bootFunction = nullptr;
-	UpdateFunc updateFunction = nullptr;
-	DrawImGuiFunc drawImGuiFunction = nullptr;
+	virtual void OnBoot(int argc, char** argv) = 0;
+	virtual void OnUpdate(const float deltaTime) = 0;
+	virtual void OnDrawImGui(const float deltaTime) = 0;
 };
 
 }
