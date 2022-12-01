@@ -5,7 +5,7 @@
 namespace Heavenly::World
 {
 
-MaterialComponent::MaterialComponent(Entity* e) : Component(e)
+MaterialComponent::MaterialComponent(Entity& e) : Component(e)
 {
 
 }
@@ -15,35 +15,35 @@ MaterialComponent::~MaterialComponent()
 
 }
 
-void MaterialRendererSystem(MaterialComponent* material, [[maybe_unused]] const float deltaTime)
+void MaterialRendererSystem(MaterialComponent& material, [[maybe_unused]] const float deltaTime)
 {
-	if (!material->compiled)
+	if (!material.compiled)
 	{
 		unsigned int _vertShaderIndex = 0;
 		unsigned int _fragShaderIndex = 0;
 		
-		if (!material->vertexShader.empty())
+		if (!material.vertexShader.empty())
 		{
-			Rendering::RegisterNewVertexShader(material->vertexShader, _vertShaderIndex);
+			Rendering::RegisterNewVertexShader(material.vertexShader, _vertShaderIndex);
 		}
 
-		if (!material->fragmentShader.empty())
+		if (!material.fragmentShader.empty())
 		{
-			Rendering::RegisterNewFragmentShader(material->fragmentShader, _fragShaderIndex);
+			Rendering::RegisterNewFragmentShader(material.fragmentShader, _fragShaderIndex);
 		}
 		
 		if (_vertShaderIndex != 0 || _fragShaderIndex != 0)
 		{
-			Rendering::RegisterNewShaderProgram(_vertShaderIndex, _fragShaderIndex, material->shaderProgramIndex);
+			Rendering::RegisterNewShaderProgram(_vertShaderIndex, _fragShaderIndex, material.shaderProgramIndex);
 		}
 		Rendering::DeleteShader(_vertShaderIndex);
 		Rendering::DeleteShader(_fragShaderIndex);
-		material->compiled = true;
+		material.compiled = true;
 	}
 	
-	if (material->shaderProgramIndex)
+	if (material.shaderProgramIndex)
 	{
-		Rendering::UseShaderProgram(material->shaderProgramIndex);
+		Rendering::UseShaderProgram(material.shaderProgramIndex);
 	}
 }
 

@@ -15,9 +15,9 @@ target_include_directories(
 
 target_link_libraries(${APP_EXE} ${ENGINE_LIB})
 
-target_compile_features(${APP_EXE} PRIVATE cxx_std_20)
+target_compile_features(${APP_EXE} PRIVATE cxx_std_23)
 
-set_target_properties(${APP_EXE} PROPERTIES CXX_STANDARD 20)
+set_target_properties(${APP_EXE} PROPERTIES CXX_STANDARD 23)
 
 target_compile_options(${APP_EXE} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /Zc:preprocessor>

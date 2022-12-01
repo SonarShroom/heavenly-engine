@@ -1,79 +1,150 @@
-#ifndef ENTITY_COMPONENT_SYSTEM_H_
-#define ENTITY_COMPONENT_SYSTEM_H_
+#pragma once
 
 #include <functional>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
-#include "MathBaseTypes.h"
+#include "math/MathBaseTypes.h"
 
 namespace Heavenly::World
 {
 
-struct WorldAdmin;
+class WorldAdmin;
 
 class Component;
 
-struct Entity final
+class Entity final
 {
-	Entity() = delete;
-	~Entity() = default;
+public:
+	using ComponentRef = std::reference_wrapper<Component>;
 
-	explicit Entity(const WorldAdmin* world, const std::string& id) : world(world), id(id) { }
+	Entity(const WorldAdmin& world, const std::string& id) : world(world), id(id) {}
 
-	const WorldAdmin* world = nullptr;
+	inline const std::string& GetID() const { return id; }
+
+	inline const std::vector<ComponentRef>& GetComponents() const { return components; }
+	void AddComponent(Component& comp);
+	void RemoveComponent(Component& comp);
+
+private:
+	const WorldAdmin& world;
 	std::string id;
-	std::vector<Component*> components;
+	std::vector<ComponentRef> components;
 };
 
 class Component
 {
 public:
-	explicit Component(const Entity* e) : entity(e) {}
+	explicit Component(Entity& e) : entity(e) {}
 	
-	virtual ~Component() = default;
-	
-	inline const Entity* GetEntity() const { return entity; }
+	virtual ~Component() = 0;
+
+	Entity& GetEntity() const { return entity; }
 
 	template <typename Component_t>
 	requires std::is_base_of_v<Component, Component_t>
 	Component_t* GetSibling() const
 	{
 		// TODO: Get component on same entity with this type;
-		for (auto* _c : entity->components)
+		for (auto& _c : entity.GetComponents())
 		{
-			auto* _casted = dynamic_cast<Component_t*>(_c);
+			auto* _casted = dynamic_cast<Component_t*>(&_c.get());
 			if (_casted)
-			{
 				return _casted;
-			}
 		}
 		return nullptr;
 	}
 
 private:
-	const Entity* entity = nullptr;
+	Entity& entity;
 };
 
-struct TransformComponent final : public Component
+class TransformComponent final : public Component
 {
-	TransformComponent(Entity* e) : Component(e) { }
+public:
+	TransformComponent(Entity& e) : Component(e) { }
 
-	Math::Vector3<float> position = {0, 0, 0};
-	Math::Vector3<float> rotation = {0, 0, 0};
-	Math::Vector3<float> scale = {0, 0, 0};
+	Math::Vector3<float> position;
+	Math::Vector3<float> rotation;
+	Math::Vector3<float> scale;
 };
 
-struct WorldAdmin
+class WorldAdmin
 {
+public:
 	using SystemTickFunc = std::function<void(float)>;
-	using ComponentInitFunc = std::function<void(Component*)>;
+	using ComponentInitFunc = std::function<void(Component&)>;
 
-	WorldAdmin() = default;
-	~WorldAdmin() = default;
+	WorldAdmin();
 
-	std::vector<Entity*> entities;
-	std::vector<Component*> components;
+	void Tick(const float deltaTime);
+
+	Entity& CreateEntity(const std::string& id);
+	Entity* GetEntity(const std::string& id);
+	void DestroyEntity(const std::string& id);
+	
+	void IterateWorldEntities(void(*visitor)(Entity&));
+
+	template<typename Component_t, typename ...Args_t>
+	requires std::is_base_of_v<Component, Component_t>
+	Component_t* CreateComponent(Entity& entity, Args_t... args)
+	{
+		for (auto& ent : entities)
+		{
+			if (&entity != &ent) continue;
+
+			auto _newComponent = std::make_unique<Component_t>(entity, args...);
+			auto* _newComponentPtr = _newComponent.get();
+			ent.AddComponent(*_newComponent);
+			components.push_back(std::move(_newComponent));
+			return _newComponentPtr;
+		}
+		return nullptr;
+	}
+
+	template<typename Component_t>
+	requires std::is_base_of_v<Component, Component_t>
+	Component_t* GetComponent(Entity& entity) const
+	{
+		for (const auto& ent: entities)
+		{
+			if (&entity != &ent) continue;
+
+			for (auto& _c : ent.GetComponents())
+			{
+				auto* _casted = dynamic_cast<Component_t*>(&_c);
+				if (_casted) return _casted;
+			}
+		}
+		return nullptr;
+	}
+
+	void DestroyComponent(Component& component);
+
+	template<typename Component_t>
+	requires std::is_base_of_v<Component, Component_t>
+	void RegisterSystem(void (*systemFunction)(Component_t&, const float))
+	{
+		systems.push_back(
+			[&comps = this->components, systemFunction](const float deltaTime) -> void
+			{
+				for (auto& c : comps)
+				{
+					auto* _tgtComp = dynamic_cast<Component_t*>(c.get());
+					if (_tgtComp)
+					{
+						(*systemFunction)(*_tgtComp, deltaTime);
+					}
+				}
+			}
+		);
+	}
+
+private:
+	std::vector<Entity> entities;
+	std::vector<std::unique_ptr<Component>> components;
 	std::vector<SystemTickFunc> systems;
 };
 
@@ -101,67 +172,4 @@ public:
 };
 */
 
-// Admin lifetime functions
-WorldAdmin* CreateWorld();
-
-void DestroyWorld(WorldAdmin* admin);
-
-void Tick(WorldAdmin* world, const float deltaTime);
-
-void Terminate();
-
-void IterateWorldEntities(unsigned int worldIndex, void(*visitor)(Entity*));
-
-// Entity Functions
-Entity* CreateEntity(WorldAdmin* world, const std::string& id);
-
-void DestroyEntity(Entity* entity);
-
-template<typename Component_t>
-Component_t* GetComponent(Entity* entity)
-{
-	for (auto* _c : entity->components)
-	{
-		auto* _casted = dynamic_cast<Component_t*>(_c);
-		if (_casted)
-		{
-			return _casted;
-		}
-	}
-	return nullptr;
-}
-
-template<typename Component_t>
-Component_t* CreateComponent(Entity* entity)
-{
-	auto* _world = const_cast<WorldAdmin*>(entity->world);
-	auto* _newComponent = new Component_t(entity);
-	_world->components.push_back(_newComponent);
-	entity->components.push_back(_newComponent);
-	return _newComponent;
-}
-
-void DestroyComponent(Component* component);
-
-template<typename Component_t>
-requires std::is_base_of_v<Component, Component_t>
-void RegisterSystem(WorldAdmin* world, void (*systemFunction)(Component_t*, const float))
-{
-	world->systems.push_back(
-		[world, systemFunction](const float deltaTime) -> void
-		{
-			for (auto* c : world->components)
-			{
-				auto* _tgtComp = dynamic_cast<Component_t*>(c);
-				if (_tgtComp)
-				{
-					(*systemFunction)(_tgtComp, deltaTime);
-				}
-			}
-		}
-	);
-}
-
 } // Heavenly::World
-
-#endif //ENTITY_COMPONENT_SYSTEM_H_

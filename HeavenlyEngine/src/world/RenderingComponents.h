@@ -9,7 +9,7 @@ namespace Heavenly::World
 
 struct MaterialComponent : public Component
 {
-	MaterialComponent(Entity* e);
+	MaterialComponent(Entity& e);
 	~MaterialComponent();
 
 	bool compiled = false;
@@ -20,7 +20,7 @@ struct MaterialComponent : public Component
 	std::string fragmentShader;
 };
 
-void MaterialRendererSystem(MaterialComponent* material, const float deltaTime);
+void MaterialRendererSystem(MaterialComponent& material, const float deltaTime);
 
 } // Heavenly::World
 

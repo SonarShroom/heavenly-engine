@@ -43,7 +43,6 @@ void InitializeEngine(int argc, char** argv)
 void Terminate()
 {
 	Rendering::Terminate();
-	World::Terminate();
 	GUI::Terminate();
 	HV_LOG_INFO("Heavenly Engine shutdown.");
 }
@@ -54,9 +53,9 @@ int Run(int argc, char** argv, Core::AppRuntime* app)
 
 	InitializeEngine(argc, argv);
 
-	auto* _world = World::CreateWorld();
-	auto* _rectEntity = World::CreateEntity(_world, "rect");
-	auto* _rectTransform = World::GetComponent<World::TransformComponent>(_rectEntity);
+	auto _world = std::make_unique<World::WorldAdmin>();
+	auto& _rectEntity = _world->CreateEntity("rect");
+	auto& _rectTransform = _rectEntity.GetComponent<World::TransformComponent>();
 	_rectTransform->position = {-.2f, .1f, 0.f};
 
 	auto* _rectComponent = World::CreateComponent<World::RectComponent>(_rectEntity);

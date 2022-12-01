@@ -10,7 +10,7 @@ namespace Heavenly::World
 
 struct RectComponent : public Component
 {
-	RectComponent(const Entity* e) : Component(e) {}
+	RectComponent(Entity& e) : Component(e) {}
 	
 	~RectComponent() = default;
 
@@ -21,6 +21,6 @@ struct RectComponent : public Component
 	Rendering::Quad quad = {};
 };
 
-void RectRendererSystem(RectComponent* rectComponent, [[maybe_unused]] const float timeDelta);
+void RectRendererSystem(RectComponent& rectComponent, [[maybe_unused]] const float timeDelta);
 
 } // Heavenly::World

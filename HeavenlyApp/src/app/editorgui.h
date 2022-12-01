@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <string_view>
 
 namespace HeavenlyApp::App
 {
@@ -8,11 +8,11 @@ namespace HeavenlyApp::App
 class IAppWindow {
 public:
 	
-	IAppWindow(const std::string_view& title) : title(title) {}
+	constexpr IAppWindow(const std::string_view& title) : title(title) {}
 
 	virtual void Draw() = 0;
 	
-	std::string GetTitle() const {
+	const std::string_view& GetTitle() const {
 		return title;
 	}
 
@@ -22,9 +22,9 @@ public:
 
 private:
 
-	constexpr std::string_view title;
+	const std::string_view title;
 	bool isOpen = true;
-}
+};
 
 class IAppScope {
 public:
@@ -32,7 +32,7 @@ public:
 
 private:
 
-}
+};
 
 void ShowMainMenuBar();
 

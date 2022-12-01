@@ -1,4 +1,6 @@
-#include "../EntityComponentSystem.h"
+#include "EntityComponentSystem.h"
+
+#include <cassert>
 
 #include <iostream>
 #include <vector>
@@ -12,90 +14,86 @@
 namespace Heavenly::World
 {
 
-std::vector<WorldAdmin*> p_worlds;
-
-WorldAdmin* CreateWorld()
+void Entity::AddComponent(Component& comp)
 {
-	auto _worldInit = [](WorldAdmin* world)
-	{
-		RegisterSystem(world, &MaterialRendererSystem);
-		RegisterSystem(world, &RectRendererSystem);
-	};
-	auto* _newWorld = p_worlds.emplace_back(new WorldAdmin());
-	_worldInit(_newWorld);
-	return _newWorld;
+	components.push_back(std::ref(comp));
 }
 
-void DestroyWorld(WorldAdmin* world)
+void Entity::RemoveComponent(Component& comp)
 {
-	for (auto* _ent : world->entities)
+	for (auto _compIt = components.begin(); _compIt != components.end(); _compIt++)
 	{
-		delete _ent;
+		if (&(*_compIt).get() == &comp)
+		{
+			components.erase(_compIt);
+			break;
+		}
 	}
+}
 
-	for (auto* _comp : world->components)
-	{
-		delete _comp;
-	}
-	
-	delete world;
+WorldAdmin::WorldAdmin()
+{
+	RegisterSystem(&MaterialRendererSystem);
+	RegisterSystem(&RectRendererSystem);
 }
 
 /* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the
 * order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
 * running said systems)*/
-void Tick(WorldAdmin* world, const float deltaTime)
+void WorldAdmin::Tick(const float deltaTime)
 {
-	for(const auto& system : world->systems)
+	for(const auto& system : systems)
 	{
 		system(deltaTime);
 	}
 }
 
-void Terminate()
+void WorldAdmin::IterateWorldEntities(void(*visitor)(Entity&))
 {
-	HV_LOG_INFO("Removing {} {}.", p_worlds.size(), p_worlds.size() == 1 ? "world" : "worlds");
-	for (auto* _world : p_worlds)
-	{
-		DestroyWorld(_world);
-	}
-}
-
-void IterateWorldEntities(unsigned int worldIndex, void(*visitor)(Entity*))
-{
-	auto _world = p_worlds.at(worldIndex);
-	for (auto* _ent : _world->entities)
+	for (auto& _ent : entities)
 	{
 		visitor(_ent);
 	}
 }
 
-Entity* CreateEntity(WorldAdmin* world, const std::string& id)
+Entity& WorldAdmin::CreateEntity(const std::string& id)
 {
-	auto* _newEntity = new Entity(world, id);
-	world->entities.push_back(_newEntity);
-	CreateComponent<TransformComponent>(_newEntity);
-	return _newEntity;
+	auto& _ent = entities.emplace_back(this, id);
+	CreateComponent<TransformComponent>(_ent);
+	return _ent;
 }
 
-void DestroyEntity(Entity* entity)
+void WorldAdmin::DestroyEntity(const std::string& id)
 {
-	auto* _world = const_cast<WorldAdmin*>(entity->world);
-	std::erase(_world->entities, entity);
-	for (const auto* _entityComp : entity->components)
+	auto _entityIt = entities.begin();
+	for (const auto _entitiesEnd = entities.end(); _entityIt != _entitiesEnd; _entityIt++)
 	{
-		std::erase(_world->components, _entityComp);
+		if (_entityIt->GetID() == id) break;
 	}
-	delete entity;
+	if (_entityIt == entities.end())
+	{
+		return;
+	}
+	auto _entityComponents = _entityIt->GetComponents();
+	for (auto _entCompIt = _entityComponents.begin(); _entCompIt != _entityComponents.end(); _entCompIt++)
+	{
+		DestroyComponent(*_entCompIt);
+	}
+	entities.erase(_entityIt);
 }
 
-void DestroyComponent(Component* comp)
+void WorldAdmin::DestroyComponent(Component& comp)
 {
-	auto* _entity = const_cast<Entity*>(comp->GetEntity());
-	std::erase(_entity->components, comp);
-	auto* _world = const_cast<WorldAdmin*>(_entity->world);
-	std::erase(_world->components, comp);
-	delete comp;
+	auto& _entity = comp.GetEntity();
+	_entity.RemoveComponent(comp);
+	auto _compIt = components.begin();
+	for (auto _compEnd = components.end(); _compIt < _compEnd; _compIt++)
+	{
+		if (_compIt->get() == &comp)
+		{
+			components.erase(_compIt);
+		}
+	}
 }
 
 } // Heavenly::World
