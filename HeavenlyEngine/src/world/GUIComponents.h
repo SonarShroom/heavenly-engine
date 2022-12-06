@@ -1,8 +1,8 @@
 #pragma once
 
-#include "graphics/RenderPrimitives.h"
-#include "world/EntityComponentSystem.h"
+#include "world/Component.h"
 
+#include "graphics/RenderPrimitives.h"
 #include "math/MathBaseTypes.h"
 
 namespace Heavenly::World
@@ -14,11 +14,11 @@ struct RectComponent : public Component
 	
 	~RectComponent() = default;
 
-	Math::Vector2<float> size = {};
-	Math::Vector4<float> color = {};
-
 	bool drawDirty = true;
-	Rendering::Quad quad = {};
+
+	Math::Vector2 size;
+	Math::Vector4 color;
+	Rendering::Quad quad;
 };
 
 void RectRendererSystem(RectComponent& rectComponent, [[maybe_unused]] const float timeDelta);

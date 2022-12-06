@@ -1,12 +1,13 @@
 #ifndef RENDERERING_H_
 #define RENDERERING_H_
 
-#include "EntityComponentSystem.h"
-#include "MathBaseTypes.h"
-#include "RenderPrimitives.h"
+#include <string>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "MathBaseTypes.h"
+#include "RenderPrimitives.h"
 
 namespace Heavenly::Window
 {

@@ -2,12 +2,12 @@
 
 #include <Heavenly.h>
 
+#include "appruntime.h"
+
 namespace HeavenlyApp::App
 {
 
-bool p_showSceneExplorer = true;
-
-void ShowMainMenuBar()
+void EditorGUI::ShowMainMenuBar()
 {
 	if (ImGui::BeginMenuBar())
 	{
@@ -23,19 +23,19 @@ void ShowMainMenuBar()
 		if (ImGui::BeginMenu("Window"))
 		{
 			ImGui::MenuItem("Entity Inspector", "", false, false); // TODO: Implement when scene load and unload is possible.
-			ImGui::MenuItem("Scene Tree", NULL, &p_showSceneExplorer); // TODO: Implement when scene load and unload is possible.
+			ImGui::MenuItem("Scene Tree", NULL, &showSceneExplorer); // TODO: Implement when scene load and unload is possible.
 			ImGui::EndMenu();
 		}
 	}
 	ImGui::EndMenuBar();
 }
 
-void ShowSceneExplorer()
+void EditorGUI::ShowSceneExplorer()
 {
-	if (ImGui::Begin("Scene Tree", &p_showSceneExplorer))
+	if (ImGui::Begin("Scene Tree", &showSceneExplorer))
 	{
-		Heavenly::World::IterateWorldEntities(0, [](Heavenly::World::Entity* e) {
-			if (ImGui::TreeNode(e->id.c_str()))
+		runtime.mainWorld.IterateWorldEntities([](Heavenly::World::Entity& e) {
+			if (ImGui::TreeNode(e.GetID().data()))
 			{
 				ImGui::TreePop();
 			}
@@ -44,7 +44,7 @@ void ShowSceneExplorer()
 	ImGui::End();
 }
 
-void ShowInspector()
+void EditorGUI::ShowInspector()
 {
 
 }

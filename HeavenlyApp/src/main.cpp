@@ -1,11 +1,12 @@
 #include <Heavenly.h>
 
+#include <memory>
+
 #include "appruntime.h"
 
 int main(int argc, char** argv)
 {
-	auto* _app = new HeavenlyApp::App::Runtime();
-	Heavenly::Run(argc, argv, _app);
-	delete _app;
-	return 0;
+	using EngineT = Heavenly::Core::Engine;
+	EngineT _engine = EngineT(argc, argv, std::make_unique<HeavenlyApp::App::Runtime>(_engine));
+	return _engine.Run();
 }

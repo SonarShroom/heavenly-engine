@@ -22,7 +22,7 @@ struct WindowContext
 {
 	GLFWwindow* window = nullptr;
 	std::string name;
-	Math::Vector2<int> size;
+	Math::Vector2 size;
 	WindowMode mode = WindowMode::WINDOWED;
 };
 
@@ -30,7 +30,7 @@ bool Init();
 
 void CreateWindow(
 	const std::string& name = "Heavenly Game Engine",
-	const Math::Vector2<int>& size = Math::Vector2(1280, 720),
+	const Math::Vector2& size = Math::Vector2(1280, 720),
 	const WindowMode& mode = WindowMode::WINDOWED
 );
 

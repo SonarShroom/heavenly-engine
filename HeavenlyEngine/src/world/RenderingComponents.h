@@ -2,15 +2,15 @@
 
 #include <string>
 
-#include "world/EntityComponentSystem.h"
+#include "Component.h"
 
 namespace Heavenly::World
 {
 
 struct MaterialComponent : public Component
 {
-	MaterialComponent(Entity& e);
-	~MaterialComponent();
+	MaterialComponent(Entity& e) : Component(e) { }
+	~MaterialComponent() = default;
 
 	bool compiled = false;
 	unsigned int shaderProgramIndex = 0;

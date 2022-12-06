@@ -5,6 +5,8 @@
 namespace HeavenlyApp::App
 {
 
+class Runtime;
+
 class IAppWindow {
 public:
 	
@@ -34,10 +36,23 @@ private:
 
 };
 
-void ShowMainMenuBar();
+class EditorGUI
+{
+public:
+	EditorGUI(Runtime& runtime) : runtime(runtime) { }
 
-void ShowSceneExplorer();
+	void ShowMainMenuBar();
 
-void ShowInspector();
+	void ShowSceneExplorer();
+
+	void ShowInspector();
+
+private:
+	bool showSceneExplorer = true;
+
+	Runtime& runtime;
+};
+
+
 
 }

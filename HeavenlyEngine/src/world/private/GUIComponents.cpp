@@ -2,7 +2,6 @@
 
 #include "logging/LogManager.h"
 #include "graphics/Rendering.h"
-#include "world/EntityComponentSystem.h"
 
 namespace Heavenly::World
 {

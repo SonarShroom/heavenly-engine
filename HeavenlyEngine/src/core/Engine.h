@@ -1,13 +1,28 @@
 #pragma once
 
-namespace Heavenly
+#include <memory>
+#include <vector>
+
+#include "world/WorldAdmin.h"
+#include "graphics/Rendering.h"
+
+namespace Heavenly::Core
 {
 
-namespace Core
-{
 class AppRuntime;
-}
 
-int Run(int argc, char**, Core::AppRuntime* app);
+class Engine
+{
+public:
+	Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRuntime);
+		
+	World::WorldAdmin& CreateWorld();
+
+	int Run();
+
+private:
+	std::unique_ptr<Core::AppRuntime> runtime;
+	std::vector<World::WorldAdmin> worlds;
+};
 
 }

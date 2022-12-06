@@ -36,7 +36,7 @@ bool Init()
 	return m_isSystemInit;
 }
 
-void CreateWindow(const std::string& name, const Math::Vector2<int>& size, const WindowMode& mode)
+void CreateWindow(const std::string& name, const Math::Vector2& size, const WindowMode& mode)
 {
 	if (!m_isSystemInit)
 	{

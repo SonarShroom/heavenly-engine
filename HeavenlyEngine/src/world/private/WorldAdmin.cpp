@@ -1,37 +1,14 @@
-#include "EntityComponentSystem.h"
+#include "WorldAdmin.h"
 
-#include <cassert>
-
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <string>
-
-#include "logging/LogManager.h"
+#include "world/Component.h"
+#include "world/Entity.h"
 #include "world/GUIComponents.h"
 #include "world/RenderingComponents.h"
 
 namespace Heavenly::World
 {
 
-void Entity::AddComponent(Component& comp)
-{
-	components.push_back(std::ref(comp));
-}
-
-void Entity::RemoveComponent(Component& comp)
-{
-	for (auto _compIt = components.begin(); _compIt != components.end(); _compIt++)
-	{
-		if (&(*_compIt).get() == &comp)
-		{
-			components.erase(_compIt);
-			break;
-		}
-	}
-}
-
-WorldAdmin::WorldAdmin()
+WorldAdmin::WorldAdmin([[maybe_unused]] Core::Engine& engine)
 {
 	RegisterSystem(&MaterialRendererSystem);
 	RegisterSystem(&RectRendererSystem);
@@ -42,7 +19,7 @@ WorldAdmin::WorldAdmin()
 * running said systems)*/
 void WorldAdmin::Tick(const float deltaTime)
 {
-	for(const auto& system : systems)
+	for (const auto& system : systems)
 	{
 		system(deltaTime);
 	}
@@ -58,9 +35,17 @@ void WorldAdmin::IterateWorldEntities(void(*visitor)(Entity&))
 
 Entity& WorldAdmin::CreateEntity(const std::string& id)
 {
-	auto& _ent = entities.emplace_back(this, id);
-	CreateComponent<TransformComponent>(_ent);
+	auto& _ent = entities.emplace_back(id);
 	return _ent;
+}
+
+Entity* WorldAdmin::GetEntity(const std::string& id)
+{
+	for (auto& _ent: entities)
+	{
+		if (_ent.GetID() == id) return &_ent;
+	}
+	return nullptr;
 }
 
 void WorldAdmin::DestroyEntity(const std::string& id)
@@ -77,7 +62,7 @@ void WorldAdmin::DestroyEntity(const std::string& id)
 	auto _entityComponents = _entityIt->GetComponents();
 	for (auto _entCompIt = _entityComponents.begin(); _entCompIt != _entityComponents.end(); _entCompIt++)
 	{
-		DestroyComponent(*_entCompIt);
+		DestroyComponent(_entCompIt->get());
 	}
 	entities.erase(_entityIt);
 }
@@ -96,4 +81,4 @@ void WorldAdmin::DestroyComponent(Component& comp)
 	}
 }
 
-} // Heavenly::World
+}

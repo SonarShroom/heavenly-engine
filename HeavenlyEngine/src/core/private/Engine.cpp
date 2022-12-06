@@ -9,16 +9,15 @@
 #include "logging/LogManager.h"
 #include "graphics/Rendering.h"
 #include "window/Window.h"
-#include "world/EntityComponentSystem.h"
+
+#include "world/Component.h"
 #include "world/GUIComponents.h"
 #include "world/RenderingComponents.h"
 
-namespace Heavenly
+namespace Heavenly::Core
 {
 
-Core::AppRuntime* p_app = nullptr;
-
-void InitializeEngine(int argc, char** argv)
+Engine::Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRuntime) : runtime(std::move(appRuntime))
 {
 	Logging::Init();
 
@@ -33,11 +32,15 @@ void InitializeEngine(int argc, char** argv)
 	Rendering::Init();
 	GUI::InitDevGui(_windowCtx);
 
-	GUI::RegisterImGuiRenderFunction([](const float deltaTime) {p_app->OnDrawImGui(deltaTime);});
+	GUI::RegisterImGuiRenderFunction([&](const float deltaTime) {runtime->OnDrawImGui(deltaTime);});
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 	
-	p_app->OnBoot(argc, argv);
+	runtime->OnBoot(argc, argv);
+}
+
+World::WorldAdmin& Engine::CreateWorld() {
+	return worlds.emplace_back(*this);
 }
 
 void Terminate()
@@ -47,51 +50,14 @@ void Terminate()
 	HV_LOG_INFO("Heavenly Engine shutdown.");
 }
 
-int Run(int argc, char** argv, Core::AppRuntime* app)
+int Engine::Run()
 {
-	p_app = app;
-
-	InitializeEngine(argc, argv);
-
-	auto _world = std::make_unique<World::WorldAdmin>();
-	auto& _rectEntity = _world->CreateEntity("rect");
-	auto& _rectTransform = _rectEntity.GetComponent<World::TransformComponent>();
-	_rectTransform->position = {-.2f, .1f, 0.f};
-
-	auto* _rectComponent = World::CreateComponent<World::RectComponent>(_rectEntity);
-	_rectComponent->size.x = .2f;
-	_rectComponent->size.y = .2f;
-	_rectComponent->color = {1.f, .5f, .2f, 1.0f};
-
-	auto* _matComponent = World::CreateComponent<World::MaterialComponent>(_rectEntity);
-	_matComponent->vertexShader = R"(
-		#version 330 core
-		layout (location = 0) in vec3 aPos;
-		layout (location = 1) in vec4 aCol;
-		out vec4 vCol;
-		void main()
-		{
-			vCol = aCol;
-			gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-		}
-	)";
-
-	_matComponent->fragmentShader = R"(
-		#version 330 core
-		in vec4 vCol;
-		out vec4 FragColor;
-		void main()
-		{
-		   FragColor = vCol;
-		}
-	)";
-
 	auto end_frame_time = std::chrono::steady_clock::now();
 
 	while (!Window::ShouldClose())
 	{
 		auto deltaTime = static_cast<float>((std::chrono::steady_clock::now() - end_frame_time).count());
-		World::Tick(_world, deltaTime);
+		for (auto& _world : worlds) _world.Tick(deltaTime);
 
 		Rendering::Tick(deltaTime);
 		GUI::ShowDevGui(deltaTime);

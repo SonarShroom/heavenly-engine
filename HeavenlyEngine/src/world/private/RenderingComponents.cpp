@@ -5,16 +5,6 @@
 namespace Heavenly::World
 {
 
-MaterialComponent::MaterialComponent(Entity& e) : Component(e)
-{
-
-}
-
-MaterialComponent::~MaterialComponent()
-{
-
-}
-
 void MaterialRendererSystem(MaterialComponent& material, [[maybe_unused]] const float deltaTime)
 {
 	if (!material.compiled)

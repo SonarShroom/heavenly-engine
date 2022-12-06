@@ -5,6 +5,11 @@
 #include <imgui_internal.h>
 
 #include "core/AppRuntime.h"
-#include "core/Core.h"
+#include "core/Engine.h"
 #include "window/Window.h"
-#include "world/EntityComponentSystem.h"
+
+#include "world/Component.h"
+#include "world/Entity.h"
+#include "world/WorldAdmin.h"
+#include "world/GUIComponents.h"
+#include "world/RenderingComponents.h"
