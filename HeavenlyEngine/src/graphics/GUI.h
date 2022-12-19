@@ -4,15 +4,15 @@
 #include <functional>
 #include <string>
 
-namespace Heavenly::Window
+namespace Heavenly::WindowSystem
 {
-struct WindowContext;
+	class Window;
 }
 
 namespace Heavenly::GUI
 {
 
-void InitDevGui(const Window::WindowContext* ctx = nullptr);
+void InitDevGui(const WindowSystem::Window& window);
 
 void RegisterImGuiRenderFunction(const std::function<void(const float)>& renderFunction);
 

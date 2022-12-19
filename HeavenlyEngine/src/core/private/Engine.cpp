@@ -7,8 +7,7 @@
 #include "core/HeavenlyVersion.h"
 #include "graphics/GUI.h"
 #include "logging/LogManager.h"
-#include "graphics/Rendering.h"
-#include "window/Window.h"
+#include "graphics/Renderer.h"
 
 #include "world/Component.h"
 #include "world/GUIComponents.h"
@@ -21,16 +20,22 @@ Engine::Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRun
 {
 	Logging::Init();
 
-	if (!Window::Init())
+	if (!WindowSystem::Init())
 	{
-		HV_LOG_ERROR("Could not initialize window system.");
+		state = State::ErrorOnBoot;
+		return;
+	}
+	
+	using WindowModeT = WindowSystem::Window::Mode;
+	mainWindow = std::make_unique<WindowSystem::Window>("Heavenly Game Engine", Math::Vector2(1280, 720), WindowModeT::WINDOWED);
+	if (!mainWindow->IsWindowCreated())
+	{
+		state = State::ErrorOnBoot;
 		return;
 	}
 
-	Window::CreateWindow();
-	auto* _windowCtx = Window::GetWindowContext();
-	Rendering::Init();
-	GUI::InitDevGui(_windowCtx);
+	renderer = std::make_unique<Graphics::Renderer>(mainWindow->GetWindowSize());
+	GUI::InitDevGui(*mainWindow);
 
 	GUI::RegisterImGuiRenderFunction([&](const float deltaTime) {runtime->OnDrawImGui(deltaTime);});
 
@@ -40,35 +45,40 @@ Engine::Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRun
 }
 
 World::WorldAdmin& Engine::CreateWorld() {
-	return worlds.emplace_back(*this);
+	auto& _world = worlds.emplace_back(*this);
+	_world.RegisterObjectSystem(*renderer, &Graphics::Renderer::MaterialRendererSystem);
+	_world.RegisterObjectSystem(*renderer, &Graphics::Renderer::RectRendererSystem);
+	return _world;
 }
 
-void Terminate()
+Engine::~Engine()
 {
-	Rendering::Terminate();
+	WindowSystem::Terminate();
 	GUI::Terminate();
 	HV_LOG_INFO("Heavenly Engine shutdown.");
 }
 
 int Engine::Run()
 {
+	if (state == State::ErrorOnBoot) return 0;
+
 	auto end_frame_time = std::chrono::steady_clock::now();
 
-	while (!Window::ShouldClose())
+	while (!mainWindow->ShouldClose())
 	{
 		auto deltaTime = static_cast<float>((std::chrono::steady_clock::now() - end_frame_time).count());
-		for (auto& _world : worlds) _world.Tick(deltaTime);
+		for (auto& _world : worlds)
+			_world.Tick(deltaTime);
 
-		Rendering::Tick(deltaTime);
-		GUI::ShowDevGui(deltaTime);
+		renderer->Tick(deltaTime);
+		//GUI::ShowDevGui(deltaTime);
 
-		Window::SwapBuffers();
-		Window::PollEvents();
+		mainWindow->SwapBuffers();
+		mainWindow->PollEvents();
+		mainWindow->SetShouldClose(shouldTerminate || mainWindow->ShouldClose());
 
 		end_frame_time = std::chrono::steady_clock::now();
 	}
-
-	Terminate();
 
 	return 0;
 }

@@ -16,7 +16,7 @@ void EditorGUI::ShowMainMenuBar()
 			ImGui::MenuItem("Open Scene", "", false, false); // TODO: Implement when scene load and unload is possible.
 			if (ImGui::MenuItem("Exit Heavenly"))
 			{
-				Heavenly::Window::SetMainWindowShouldClose(true);
+				runtime.engine.SetShouldTerminate(true);
 			}
 			ImGui::EndMenu();
 		}
@@ -34,7 +34,7 @@ void EditorGUI::ShowSceneExplorer()
 {
 	if (ImGui::Begin("Scene Tree", &showSceneExplorer))
 	{
-		runtime.mainWorld.IterateWorldEntities([](Heavenly::World::Entity& e) {
+		runtime.mainWorld->IterateWorldEntities([](Heavenly::World::Entity& e) {
 			if (ImGui::TreeNode(e.GetID().data()))
 			{
 				ImGui::TreePop();

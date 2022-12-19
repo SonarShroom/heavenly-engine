@@ -4,8 +4,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "LogManager.h"
-#include "Window.h"
+#include "logging/LogManager.h"
+#include "window_system/Window.h"
 
 namespace Heavenly::GUI
 {
@@ -20,20 +20,16 @@ constexpr auto MAIN_DOCK_WINDOW_FLAGS =
 	ImGuiWindowFlags_NoResize |
 	ImGuiWindowFlags_NoMove |
 	ImGuiWindowFlags_NoBringToFrontOnFocus |
-	ImGuiWindowFlags_NoNavFocus;
+	ImGuiWindowFlags_NoNavFocus |
+	ImGuiWindowFlags_NoBackground;
 
-void InitDevGui(const Window::WindowContext* ctx)
+void InitDevGui(const WindowSystem::Window& window)
 {
-	if (!ctx)
-	{
-		return;
-	}
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplGlfw_InitForOpenGL(ctx->window, true);
+	ImGui_ImplGlfw_InitForOpenGL(window.GetContext(), true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	ImGuiIO& _io = ImGui::GetIO();
@@ -55,6 +51,7 @@ void ShowDevGui(const float deltaTime)
 	const auto _mainDockspaceID = ImGui::GetID("Root Dockspace");
 	ImGui::SetNextWindowPos(_mainViewport->WorkPos);
 	ImGui::SetNextWindowSize(_mainViewport->WorkSize);
+	ImGui::SetNextWindowViewport(_mainViewport->ID);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -62,7 +59,7 @@ void ShowDevGui(const float deltaTime)
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
-	ImGui::DockSpace(_mainDockspaceID);
+	ImGui::DockSpace(_mainDockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
 	for (auto& renderFunc : p_ImGuiRenderFunctions)
 	{

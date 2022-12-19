@@ -79,15 +79,15 @@ add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Engine.cpp
 
     ${SRC_DIR}/graphics/private/GUI.cpp
-    ${SRC_DIR}/graphics/private/Rendering.cpp
+    ${SRC_DIR}/graphics/private/Renderer.cpp
 
     ${SRC_DIR}/logging/private/LogManager.cpp
 
-    ${SRC_DIR}/window/private/Window.cpp
+    ${SRC_DIR}/resources/private/Shader.cpp
+
+    ${SRC_DIR}/window_system/private/Window.cpp
 
     ${SRC_DIR}/world/private/Entity.cpp
-    ${SRC_DIR}/world/private/GUIComponents.cpp
-	${SRC_DIR}/world/private/RenderingComponents.cpp
     ${SRC_DIR}/world/private/WorldAdmin.cpp
 )
 
@@ -96,7 +96,8 @@ target_include_directories(${ENGINE_LIB} PUBLIC
     ${SRC_DIR}/graphics
     ${SRC_DIR}/math
     ${SRC_DIR}/logging
-    ${SRC_DIR}/window
+    ${SRC_DIR}/resources
+    ${SRC_DIR}/window_system
 	${SRC_DIR}/world
 
     ${GLAD_DIR}/include
@@ -120,9 +121,9 @@ target_link_libraries(${ENGINE_LIB} PUBLIC
     spdlog::spdlog
 )
 
-target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_23)
+target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)
 
-set_target_properties(${ENGINE_LIB} PROPERTIES CXX_STANDARD 23)
+set_target_properties(${ENGINE_LIB} PROPERTIES CXX_STANDARD 20)
 
 target_compile_options(${ENGINE_LIB} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /Zc:preprocessor>

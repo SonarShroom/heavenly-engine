@@ -34,7 +34,7 @@ public:
 	void IterateWorldEntities(void(*visitor)(Entity&));
 
 	template<ComponentType ComponentT, typename ...ArgsT>
-	ComponentT* CreateComponent(Entity& entity, ArgsT... args) noexcept
+	ComponentT* CreateComponent(Entity& entity, ArgsT&&... args) noexcept
 	{
 		for (auto& _ent : entities)
 		{
@@ -81,8 +81,22 @@ public:
 					(*systemFunction)(*_tgtComp, deltaTime);
 				}
 			}
-		}
-		);
+		});
+	}
+
+	template<class ObjectT, typename ComponentT>
+	void RegisterObjectSystem(ObjectT& callObject, void (ObjectT::*method)(ComponentT&, const float))
+	{
+		systems.emplace_back([&callObject, method, &comps = this->components](const float deltaTime) {
+			for (auto& c : comps)
+			{
+				auto* _tgtComp = dynamic_cast<ComponentT*>(c.get());
+				if (_tgtComp)
+				{
+					(callObject.*method)(*_tgtComp, deltaTime);
+				}
+			}
+		});
 	}
 
 private:

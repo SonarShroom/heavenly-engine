@@ -6,7 +6,10 @@
 
 #include "core/AppRuntime.h"
 #include "core/Engine.h"
-#include "window/Window.h"
+
+#include "resources/Shader.h"
+
+#include "window_system/Window.h"
 
 #include "world/Component.h"
 #include "world/Entity.h"

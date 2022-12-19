@@ -2,7 +2,7 @@
 
 #include "RenderPrimitives.h"
 
-namespace Heavenly::Rendering
+namespace Heavenly::Graphics
 {
 
 struct RenderCommand
@@ -11,11 +11,13 @@ struct RenderCommand
 	{
 		DRAW_QUAD = 0,
 		DRAW_TRIANGLE,
+		USE_SHADER,
 		SIZE
 	} type;
 	union Payload {
 		Triangle triangle;
 		Quad quad;
+		unsigned int shaderProgramID;
 	} payload;
 };
 

@@ -2,14 +2,14 @@
 
 #include "math/MathBaseTypes.h"
 
-namespace Heavenly::Rendering
+namespace Heavenly::Graphics
 {
 
 struct Vertex
 {
-    Math::Vector3 position {0.f, 0.f, 0.f};
+    Math::Vector3 position;
     Math::Vector4 color {255.f, 255.f, 255.f, 255.f};
-    Math::Vector2 uv {0.f, 0.f};
+    Math::Vector2 uv;
 };
 
 struct Triangle

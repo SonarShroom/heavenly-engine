@@ -10,13 +10,13 @@ namespace Heavenly::World
 
 WorldAdmin::WorldAdmin([[maybe_unused]] Core::Engine& engine)
 {
-	RegisterSystem(&MaterialRendererSystem);
-	RegisterSystem(&RectRendererSystem);
+	// RegisterSystem(&MaterialRendererSystem);
+	// RegisterSystem(&RectRendererSystem);
 }
 
 /* NOTE: As this runs Tick on all systems, it's required that when initializing a new system we check to see if the
-* order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
-* running said systems)*/
+ * order of systems does not cause any unexpected side effects (may change in the future for a more verbose way of
+ * running said systems) */
 void WorldAdmin::Tick(const float deltaTime)
 {
 	for (const auto& system : systems)

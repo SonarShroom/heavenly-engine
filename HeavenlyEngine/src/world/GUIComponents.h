@@ -18,9 +18,7 @@ struct RectComponent : public Component
 
 	Math::Vector2 size;
 	Math::Vector4 color;
-	Rendering::Quad quad;
+	Graphics::Quad quad;
 };
-
-void RectRendererSystem(RectComponent& rectComponent, [[maybe_unused]] const float timeDelta);
 
 } // Heavenly::World

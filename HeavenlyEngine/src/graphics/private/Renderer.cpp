@@ -1,32 +1,40 @@
-#include "Rendering.h"
+#include "Renderer.h"
 
 #include "BatchRendering.hpp"
 #include "GUI.h"
 #include "logging/LogManager.h"
-#include "window/Window.h"
+#include "resources/Shader.h"
+#include "window_system/Window.h"
+#include "world/Component.h"
+#include "world/GUIComponents.h"
+#include "world/RenderingComponents.h"
 
-namespace Heavenly::Rendering
+namespace Heavenly::Graphics
 {
 
 constexpr unsigned int VERTEX_ELEMENTS = 7;
 constexpr unsigned int VERTEX_SIZE = VERTEX_ELEMENTS * sizeof(float);
 
-unsigned int p_VAO = 0;
-unsigned int p_VBO = 0;
-unsigned int p_EBO = 0;
-
-std::vector<RenderCommand> p_renderCommands;
-
-bool Init()
+Renderer::Renderer(const int viewportWidth, const int viewportHeight)
 {
-	glGenVertexArrays(1, &p_VAO);
-	glGenBuffers(1, &p_VBO);
-	glGenBuffers(1, &p_EBO);
-	
-	glBindVertexArray(p_VAO);
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		HV_LOG_INFO("Could not initialize GLAD. Exiting.");
+		return;
+	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, p_VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, p_EBO);
+	HV_LOG_INFO("OpenGL initialized. Version: {}", glGetString(GL_VERSION));
+
+	glViewport(0, 0, viewportWidth, viewportHeight);
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_SIZE, (const void*)0);
 	glEnableVertexAttribArray(0);
@@ -34,11 +42,16 @@ bool Init()
 	glEnableVertexAttribArray(1);
 	
 	glBindVertexArray(0);
-
-	return true;
 }
 
-void Tick([[maybe_unused]] const float deltaTime)
+Renderer::~Renderer()
+{
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+}
+
+void Renderer::Tick([[maybe_unused]] const float deltaTime)
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -61,7 +74,7 @@ void Tick([[maybe_unused]] const float deltaTime)
 	// Calculate needed allocation for vertexes
 	unsigned int _numberVertex = 0;
 	unsigned int _numberElements = 0;
-	for (const auto& _command : p_renderCommands)
+	for (const auto& _command : renderCommands)
 	{
 		switch (_command.type) {
 			case RenderCommand::Type::DRAW_QUAD:
@@ -74,6 +87,7 @@ void Tick([[maybe_unused]] const float deltaTime)
 				_numberVertex += 3;
 				_numberElements += 3;
 			} break;
+			case RenderCommand::Type::USE_SHADER: break;
 			default:
 			{
 				HV_LOG_ERROR("Invalid render command passed to renderer.");
@@ -87,7 +101,7 @@ void Tick([[maybe_unused]] const float deltaTime)
 	unsigned int _currentMinElemIndex = 0;
 	unsigned int _currentMinElement = 0;
 	
-	for (const auto& _command : p_renderCommands)
+	for (const auto& _command : renderCommands)
 	{
 		switch (_command.type) {
 			case RenderCommand::Type::DRAW_QUAD:
@@ -115,11 +129,15 @@ void Tick([[maybe_unused]] const float deltaTime)
 				_currentMinElemIndex += 3;
 				_currentMinElement += 3;
 			} break;
+			case RenderCommand::Type::USE_SHADER:
+			{
+				glUseProgram(_command.payload.shaderProgramID);
+			} break;
 			default: {} break;
 		}
 	}
 
-	glBindVertexArray(p_VAO);
+	glBindVertexArray(VAO);
 	glBufferData(GL_ARRAY_BUFFER, _numberVertex * 7 * sizeof(float), _vertexData, GL_DYNAMIC_DRAW);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _numberElements * sizeof(unsigned int), _elements, GL_DYNAMIC_DRAW);
 
@@ -131,104 +149,64 @@ void Tick([[maybe_unused]] const float deltaTime)
 	delete[] _elements;
 }
 
-void Terminate()
+void Renderer::RectRendererSystem(World::RectComponent& rectComponent, [[maybe_unused]] const float timeDelta)
 {
-	glDeleteVertexArrays(1, &p_VAO);
-	glDeleteBuffers(1, &p_VBO);
-	glDeleteBuffers(1, &p_EBO);
+	if (rectComponent.drawDirty)
+	{
+		const auto _transformPos = rectComponent.GetSibling<World::TransformComponent>()->position;
+		const auto _size = rectComponent.size;
+		rectComponent.quad.verts[0] = {
+			{_transformPos.x, _transformPos.y, _transformPos.z},
+			rectComponent.color
+		};
+		rectComponent.quad.verts[1] = {
+			{_transformPos.x, _transformPos.y - _size.y, _transformPos.z},
+			rectComponent.color
+		};
+		rectComponent.quad.verts[2] = {
+			{_transformPos.x + _size.x, _transformPos.y, _transformPos.z},
+			rectComponent.color
+		};
+		rectComponent.quad.verts[3] = {
+			{_transformPos.x + _size.x, _transformPos.y - _size.y, _transformPos.z},
+			rectComponent.color
+		};
+		rectComponent.drawDirty = false;
+	}
+
+	EmitQuadCommand(&rectComponent.quad);
 }
 
-void EmitQuadCommand(const Quad* quad)
+void Renderer::MaterialRendererSystem(World::MaterialComponent& material, [[maybe_unused]] const float deltaTime)
 {
-	RenderCommand _newCmd = {};
-	_newCmd.type = RenderCommand::Type::DRAW_QUAD;
-	_newCmd.payload.quad = *quad;
-	p_renderCommands.push_back(_newCmd);
+	if (material.shader)
+	{
+		EmitUseShaderCommand(*material.shader);
+	}
 }
 
-void EmitTriangleCommand(const Triangle* triangle)
+void Renderer::EmitTriangleCommand(const Triangle* triangle)
 {
 	RenderCommand _newCmd = {};
 	_newCmd.type = RenderCommand::Type::DRAW_TRIANGLE;
 	_newCmd.payload.triangle = *triangle;
-	p_renderCommands.push_back(_newCmd);
+	renderCommands.push_back(_newCmd);
 }
 
-void UseShaderProgram(const unsigned int shaderProgram)
+void Renderer::EmitQuadCommand(const Quad* quad)
 {
-	glUseProgram(shaderProgram);
+	RenderCommand _newCmd = {};
+	_newCmd.type = RenderCommand::Type::DRAW_QUAD;
+	_newCmd.payload.quad = *quad;
+	renderCommands.push_back(_newCmd);
 }
 
-bool RegisterNewVertexShader(const std::string& shaderSource, unsigned int& shaderId)
+void Renderer::EmitUseShaderCommand(const Resources::Shader& shader)
 {
-	shaderId = glCreateShader(GL_VERTEX_SHADER);
-
-	const char* _shaderCStr = shaderSource.c_str();
-	glShaderSource(shaderId, 1, &_shaderCStr, nullptr);
-	glCompileShader(shaderId);
-
-	return CheckShaderCompilationSuccess(shaderId);
-}
-
-bool RegisterNewFragmentShader(const std::string& shaderSource, unsigned int& shaderId)
-{
-	shaderId = glCreateShader(GL_FRAGMENT_SHADER);
-
-	const char* shaderCStr = shaderSource.c_str();
-	glShaderSource(shaderId, 1, &shaderCStr, nullptr);
-	glCompileShader(shaderId);
-
-	return CheckShaderCompilationSuccess(shaderId);
-}
-
-void DeleteShader(const unsigned int shaderId)
-{
-	glDeleteShader(shaderId);
-}
-
-bool CheckShaderCompilationSuccess(const int shaderId)
-{
-	int success = 0;
-	glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
-
-	if (success)
-	{
-		return true;
-	}
-
-	char infoLog[512] {0};
-	glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
-	HV_LOG_ERROR("Error on shader compilation: {}", infoLog);
-	return false;
-}
-
-bool RegisterNewShaderProgram(const unsigned int vertex_shader_id, const unsigned int frag_shader_id, unsigned int& shader_program_id)
-{
-	shader_program_id = glCreateProgram();
-	glAttachShader(shader_program_id, vertex_shader_id);
-	glAttachShader(shader_program_id, frag_shader_id);
-	glLinkProgram(shader_program_id);
-
-	// NOTE: Should we really delete the shaders here?
-	glDeleteShader(vertex_shader_id);
-	glDeleteShader(frag_shader_id);
-
-	return CheckShaderProgramLinkingError(shader_program_id);
-}
-
-bool CheckShaderProgramLinkingError(const int shader_program_id)
-{
-	int success = 0;
-	glGetProgramiv(shader_program_id, GL_LINK_STATUS, &success);
-	if (success)
-	{
-		return true;
-	}
-
-	char infoLog[512]{ 0 };
-	glGetProgramInfoLog(shader_program_id, 512, NULL, infoLog);
-	HV_LOG_ERROR("Oh shit my boy we got the following linking error: {}", infoLog);
-	return false;
+	RenderCommand _newCmd = {};
+	_newCmd.type = RenderCommand::Type::USE_SHADER;
+	_newCmd.payload.shaderProgramID = shader.GetProgramID();
+	renderCommands.push_back(_newCmd);
 }
 
 }

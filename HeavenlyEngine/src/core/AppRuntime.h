@@ -9,6 +9,7 @@ class AppRuntime
 {
 public:
 	AppRuntime(Engine& engine) : engine(engine) { }
+	virtual ~AppRuntime() = default;
 
 	virtual void OnBoot(int argc, char** argv) = 0;
 	virtual void OnUpdate(const float deltaTime) = 0;

@@ -20,7 +20,7 @@ private:
 	friend EditorGUI;
 
 	EditorGUI editor = EditorGUI(*this);
-	Heavenly::World::WorldAdmin& mainWorld = engine.CreateWorld();
+	Heavenly::World::WorldAdmin* mainWorld = nullptr;
 };
 
 }

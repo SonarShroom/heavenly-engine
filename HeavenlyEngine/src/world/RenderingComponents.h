@@ -4,23 +4,21 @@
 
 #include "Component.h"
 
+namespace Heavenly::Resources
+{
+class Shader;
+}
+
 namespace Heavenly::World
 {
 
 struct MaterialComponent : public Component
 {
 	MaterialComponent(Entity& e) : Component(e) { }
-	~MaterialComponent() = default;
+	MaterialComponent(Entity& e, Resources::Shader& s) : Component(e), shader(&s) { }
 
-	bool compiled = false;
-	unsigned int shaderProgramIndex = 0;
-
-	// TODO: For now these are changed at will inside the main loop, but they should be initialized by a specific function most likely.
-	std::string vertexShader;
-	std::string fragmentShader;
+	Resources::Shader* shader = nullptr;
 };
-
-void MaterialRendererSystem(MaterialComponent& material, const float deltaTime);
 
 } // Heavenly::World
 
