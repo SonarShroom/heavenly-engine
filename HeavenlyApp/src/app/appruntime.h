@@ -7,10 +7,10 @@
 namespace HeavenlyApp::App
 {
 
-class Runtime : public Heavenly::Core::AppRuntime
+class Runtime : public Heavenly::Core::IAppRuntime
 {
 public:
-	Runtime(Heavenly::Core::Engine& engine) : AppRuntime(engine) {}
+	Runtime(Heavenly::Core::Engine& engine) : IAppRuntime(engine) {}
 
 	void OnBoot(int argc, char** argv) override;
 	void OnUpdate(const float deltaTime) override;

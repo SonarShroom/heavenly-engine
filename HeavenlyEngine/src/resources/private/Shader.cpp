@@ -11,7 +11,8 @@ namespace Heavenly::Resources
 	
 }*/
 
-Shader::Shader(const std::string_view& vertexShader, const std::string_view& fragmentShader)
+Shader::Shader(const UUIDType uuid, const std::string_view& vertexShader, const std::string_view& fragmentShader)
+	: IResource(uuid)
 {
 	enum class _ShaderType
 	{
@@ -97,11 +98,11 @@ Shader::Shader(const std::string_view& vertexShader, const std::string_view& fra
 	if (!_linkSuccess)
 	{
 		char infoLog[512]{ 0 };
-		glGetProgramInfoLog(programID, 512, NULL, infoLog);
+		glGetProgramInfoLog(programID, 512, nullptr, infoLog);
 		HV_LOG_ERROR("Error on linking shader program: {}", infoLog);
 	}
 
-	compiled = vertexShader.empty() || _vertexCompiled && fragmentShader.empty() || _fragmentCompiled && _linkSuccess != 0;
+	compiled = (vertexShader.empty() || _vertexCompiled) && (fragmentShader.empty() || _fragmentCompiled) && _linkSuccess != 0;
 
 	// NOTE: Should we really delete the shaders here?
 	glDeleteShader(_vertexShaderID);

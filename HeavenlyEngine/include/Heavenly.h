@@ -7,6 +7,7 @@
 #include "core/AppRuntime.h"
 #include "core/Engine.h"
 
+#include "resources/Manager.h"
 #include "resources/Shader.h"
 
 #include "window_system/Window.h"

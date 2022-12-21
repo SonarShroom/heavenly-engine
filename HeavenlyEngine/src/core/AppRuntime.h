@@ -5,11 +5,11 @@ namespace Heavenly::Core
 
 class Engine;
 
-class AppRuntime
+class IAppRuntime
 {
 public:
-	AppRuntime(Engine& engine) : engine(engine) { }
-	virtual ~AppRuntime() = default;
+	IAppRuntime(Engine& engine) : engine(engine) { }
+	virtual ~IAppRuntime() = default;
 
 	virtual void OnBoot(int argc, char** argv) = 0;
 	virtual void OnUpdate(const float deltaTime) = 0;

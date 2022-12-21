@@ -1,17 +1,25 @@
 #pragma once
-/*
+
 #include <filesystem>
 
 namespace Heavenly::Resources
 {
+class Manager;
 
-class Resource
+class IResource
 {
-	Resource();
+public:
+	using UUIDType = unsigned int;
+
+	explicit IResource(const UUIDType uuid) : UUID(uuid) { }
+	virtual ~IResource() = default;
+
+	IResource(const IResource&) = delete;
+	IResource& operator = (const IResource&) = delete;
+
 private:
-	unsigned int UUID;
-	std::filesystem::path path;
+	friend Manager;
+	const UUIDType UUID = 0;
 };
 
 }
-*/

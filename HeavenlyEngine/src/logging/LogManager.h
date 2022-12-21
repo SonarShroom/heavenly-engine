@@ -19,6 +19,7 @@
 namespace Heavenly::Logging
 {
 	void Init();
+	void Terminate();
 
 	spdlog::logger* GetEngineLogger();
 	spdlog::logger* GetAppLogger();

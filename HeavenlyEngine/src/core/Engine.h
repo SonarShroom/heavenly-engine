@@ -3,14 +3,19 @@
 #include <memory>
 #include <vector>
 
-#include "window_system/Window.h"
-#include "world/WorldAdmin.h"
+#include "graphics/GUIManager.h"
 #include "graphics/Renderer.h"
+
+#include "resources/Manager.h"
+
+#include "window_system/Window.h"
+
+#include "world/WorldAdmin.h"
 
 namespace Heavenly::Core
 {
 
-class AppRuntime;
+class IAppRuntime;
 
 class Engine
 {
@@ -22,11 +27,16 @@ public:
 		SIZE
 	};
 
-	Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRuntime);
+	Engine() = delete;
+	Engine(int argc, char** argv, std::unique_ptr<IAppRuntime>&& appRuntime);
 	~Engine();
 
-	inline Graphics::Renderer& GetRenderer() { return *renderer; }
-	
+	[[nodiscard]]
+	inline Graphics::Renderer& GetRenderer() const { return *renderer; }
+
+	[[nodiscard]]
+	inline Resources::Manager& GetResourceManager() { return manager; }
+
 	World::WorldAdmin& CreateWorld();
 
 	inline void SetShouldTerminate(const bool newShouldTerminate) { shouldTerminate = newShouldTerminate; }
@@ -40,10 +50,12 @@ private:
 
 	std::unique_ptr<WindowSystem::Window> mainWindow;
 	std::unique_ptr<Graphics::Renderer> renderer;
+	std::unique_ptr<Graphics::GUIManager> guiManager;
+	Resources::Manager manager;
 	std::vector<World::WorldAdmin> worlds;
 
 	// Runime related vars
-	std::unique_ptr<Core::AppRuntime> runtime;
+	std::unique_ptr<IAppRuntime> runtime;
 };
 
 }

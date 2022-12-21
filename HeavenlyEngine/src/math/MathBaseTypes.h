@@ -5,7 +5,7 @@
 namespace Heavenly::Math
 {
 
-struct Vector2 
+struct Vector2
 {
 public:
 	Vector2(const float _x = 0, const float _y = 0) : x(_x), y(_y) {}

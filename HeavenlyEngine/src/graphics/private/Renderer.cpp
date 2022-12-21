@@ -1,10 +1,11 @@
 #include "Renderer.h"
 
 #include "BatchRendering.hpp"
-#include "GUI.h"
+
 #include "logging/LogManager.h"
+
 #include "resources/Shader.h"
-#include "window_system/Window.h"
+
 #include "world/Component.h"
 #include "world/GUIComponents.h"
 #include "world/RenderingComponents.h"
@@ -157,19 +158,23 @@ void Renderer::RectRendererSystem(World::RectComponent& rectComponent, [[maybe_u
 		const auto _size = rectComponent.size;
 		rectComponent.quad.verts[0] = {
 			{_transformPos.x, _transformPos.y, _transformPos.z},
-			rectComponent.color
+			rectComponent.color,
+			{}
 		};
 		rectComponent.quad.verts[1] = {
 			{_transformPos.x, _transformPos.y - _size.y, _transformPos.z},
-			rectComponent.color
+			rectComponent.color,
+			{}
 		};
 		rectComponent.quad.verts[2] = {
 			{_transformPos.x + _size.x, _transformPos.y, _transformPos.z},
-			rectComponent.color
+			rectComponent.color,
+			{}
 		};
 		rectComponent.quad.verts[3] = {
 			{_transformPos.x + _size.x, _transformPos.y - _size.y, _transformPos.z},
-			rectComponent.color
+			rectComponent.color,
+			{}
 		};
 		rectComponent.drawDirty = false;
 	}

@@ -1,13 +1,11 @@
 #include "core/Engine.h"
 
-#include <iostream>
 #include <chrono>
 
 #include "core/AppRuntime.h"
 #include "core/HeavenlyVersion.h"
-#include "graphics/GUI.h"
+
 #include "logging/LogManager.h"
-#include "graphics/Renderer.h"
 
 #include "world/Component.h"
 #include "world/GUIComponents.h"
@@ -16,7 +14,7 @@
 namespace Heavenly::Core
 {
 
-Engine::Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRuntime) : runtime(std::move(appRuntime))
+Engine::Engine(int argc, char** argv, std::unique_ptr<IAppRuntime>&& appRuntime) : runtime(std::move(appRuntime))
 {
 	Logging::Init();
 
@@ -34,10 +32,10 @@ Engine::Engine(int argc, char** argv, std::unique_ptr<Core::AppRuntime>&& appRun
 		return;
 	}
 
+	guiManager = std::make_unique<Graphics::GUIManager>(*mainWindow);
 	renderer = std::make_unique<Graphics::Renderer>(mainWindow->GetWindowSize());
-	GUI::InitDevGui(*mainWindow);
 
-	GUI::RegisterImGuiRenderFunction([&](const float deltaTime) {runtime->OnDrawImGui(deltaTime);});
+	guiManager->RegisterImGUIRenderFunction([&](const float deltaTime) {runtime->OnDrawImGui(deltaTime);});
 
 	HV_LOG_INFO("Heavenly Engine started. Version: {}", HEAVENLY_VERSION);
 	
@@ -53,14 +51,18 @@ World::WorldAdmin& Engine::CreateWorld() {
 
 Engine::~Engine()
 {
+	guiManager = nullptr;
+	renderer = nullptr;
+	mainWindow = nullptr;
 	WindowSystem::Terminate();
-	GUI::Terminate();
-	HV_LOG_INFO("Heavenly Engine shutdown.");
+	Logging::Terminate();
 }
 
 int Engine::Run()
 {
-	if (state == State::ErrorOnBoot) return 0;
+	if (state == State::ErrorOnBoot) return -1;
+
+	state = State::Running;
 
 	auto end_frame_time = std::chrono::steady_clock::now();
 
@@ -79,6 +81,8 @@ int Engine::Run()
 
 		end_frame_time = std::chrono::steady_clock::now();
 	}
+
+	HV_LOG_INFO("Heavenly Engine shutdown.");
 
 	return 0;
 }

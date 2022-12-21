@@ -39,7 +39,7 @@ void Runtime::OnBoot([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 		   FragColor = vCol;
 		}
 	)";
-	auto* _shader = new Heavenly::Resources::Shader(_vertexShader, _fragmentShader);
+	auto* _shader = engine.GetResourceManager().CreateResource<Heavenly::Resources::Shader>(_vertexShader, _fragmentShader);
 	mainWorld->CreateComponent<Heavenly::World::MaterialComponent>(_rectEntity, *_shader);
 }
 

@@ -1,4 +1,4 @@
-#include "GUI.h"
+#include "GUIManager.h"
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -7,10 +7,8 @@
 #include "logging/LogManager.h"
 #include "window_system/Window.h"
 
-namespace Heavenly::GUI
+namespace Heavenly::Graphics
 {
-
-std::vector<std::function<void(const float)>> p_ImGuiRenderFunctions;
 
 constexpr auto MAIN_DOCK_WINDOW_FLAGS =
 	ImGuiWindowFlags_MenuBar | 
@@ -23,7 +21,7 @@ constexpr auto MAIN_DOCK_WINDOW_FLAGS =
 	ImGuiWindowFlags_NoNavFocus |
 	ImGuiWindowFlags_NoBackground;
 
-void InitDevGui(const WindowSystem::Window& window)
+GUIManager::GUIManager(const WindowSystem::Window& window)
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -36,12 +34,20 @@ void InitDevGui(const WindowSystem::Window& window)
 	_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 }
 
-void RegisterImGuiRenderFunction(const std::function<void(const float)>& renderFunction)
+GUIManager::~GUIManager()
 {
-	p_ImGuiRenderFunctions.push_back(renderFunction);
+	HV_LOG_INFO("Destroying ImGui Context...");
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
-void ShowDevGui(const float deltaTime)
+void GUIManager::RegisterImGUIRenderFunction(const std::function<void(const float)>& renderFunction)
+{
+	imGuiRenderFunctions.push_back(renderFunction);
+}
+
+void GUIManager::RenderGUI(const float deltaTime)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -61,7 +67,7 @@ void ShowDevGui(const float deltaTime)
 	ImGui::PopStyleVar();
 	ImGui::DockSpace(_mainDockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
-	for (auto& renderFunc : p_ImGuiRenderFunctions)
+	for (auto& renderFunc : imGuiRenderFunctions)
 	{
 		renderFunc(deltaTime);
 	}
@@ -72,14 +78,6 @@ void ShowDevGui(const float deltaTime)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	ImGui::EndFrame();
-}
-
-void Terminate()
-{
-	HV_LOG_INFO("Destroying ImGui Context...");
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 }
 
 }

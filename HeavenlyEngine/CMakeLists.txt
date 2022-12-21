@@ -78,7 +78,7 @@ add_subdirectory(
 add_library(${ENGINE_LIB}
     ${SRC_DIR}/core/private/Engine.cpp
 
-    ${SRC_DIR}/graphics/private/GUI.cpp
+    ${SRC_DIR}/graphics/private/GUIManager.cpp
     ${SRC_DIR}/graphics/private/Renderer.cpp
 
     ${SRC_DIR}/logging/private/LogManager.cpp
