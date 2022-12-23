@@ -43,7 +43,7 @@ Engine::Engine(int argc, char** argv, std::unique_ptr<IAppRuntime>&& appRuntime)
 }
 
 World::WorldAdmin& Engine::CreateWorld() {
-	auto& _world = worlds.emplace_back(*this);
+	auto& _world = worlds.emplace_back();
 	_world.RegisterObjectSystem(*renderer, &Graphics::Renderer::MaterialRendererSystem);
 	_world.RegisterObjectSystem(*renderer, &Graphics::Renderer::RectRendererSystem);
 	return _world;

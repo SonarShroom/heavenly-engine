@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -23,13 +24,13 @@ public:
 	using SystemTickFunc = std::function<void(float)>;
 	using ComponentInitFunc = std::function<void(Component&)>;
 
-	explicit WorldAdmin(Core::Engine& engine);
-
 	void Tick(const float deltaTime);
 
 	Entity& CreateEntity(const std::string& id);
 	Entity* GetEntity(const std::string& id);
 	void DestroyEntity(const std::string& id);
+
+	inline std::size_t GetNumEntities() { return entities.size(); }
 
 	void IterateWorldEntities(void(*visitor)(Entity&));
 
@@ -67,6 +68,14 @@ public:
 	}
 
 	void DestroyComponent(Component& component);
+
+	inline std::size_t GetNumComponents() { return components.size(); }
+
+	inline bool IsComponentRegistered(Component& component) {
+		return std::find_if(components.begin(), components.end(), [&component](std::unique_ptr<Component>& c){
+			return c.get() == &component;
+		}) != components.end();
+	}
 
 	template<typename ComponentT>
 	requires std::is_base_of_v<Component, ComponentT>

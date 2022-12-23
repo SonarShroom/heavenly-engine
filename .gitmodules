@@ -15,3 +15,6 @@
 	branch = v2.13.9
 [submodule "HeavenlyEngine/thirdparty/imgui"]
 	branch = docking
+[submodule "HeavenlyEngine/thirdparty/glm"]
+	path = HeavenlyEngine/thirdparty/glm
+	url = git@github.com:g-truc/glm.git

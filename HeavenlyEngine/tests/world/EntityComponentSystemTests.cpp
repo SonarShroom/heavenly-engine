@@ -1,5 +1,10 @@
-#include <catch2/catch.hpp>
-#include "world/EntityComponentSystem.h"
+#include <catch2/catch_all.hpp>
+
+#include <memory>
+
+#include "world/Component.h"
+#include "world/Entity.h"
+#include "world/WorldAdmin.h"
 
 namespace Heavenly::Tests
 {
@@ -7,22 +12,21 @@ SCENARIO("World entity creation", "[EntityComponentSystem]")
 {
 	GIVEN("An empty world")
 	{
-		auto* _victim = World::CreateWorld();
+		World::WorldAdmin _victim;
 
 		WHEN("An entity is created")
 		{
-			auto* _entity = World::CreateEntity(_victim, "victimEntity");
+			auto& _entity = _victim.CreateEntity("victimEntity");
 			THEN("It must be registered within the world")
 			{
-				auto _victimEntities = _victim->entities;
-				REQUIRE(std::find(_victimEntities.begin(), _victimEntities.end(), _entity) != _victimEntities.end());
+				REQUIRE(_victim.GetEntity("victimEntity") != nullptr);
 			}
 			AND_THEN("It must only have a transform component")
 			{
 				using WTransComp = World::TransformComponent;
-				auto _entityComps = _entity->components;
+				auto _entityComps = _entity.GetComponents();
 				REQUIRE(_entityComps.size() == 1);
-				REQUIRE(dynamic_cast<WTransComp*>(_entityComps.at(0)));
+				REQUIRE(dynamic_cast<WTransComp*>(&_entityComps.at(0).get()));
 			}
 		}
 	}
@@ -30,35 +34,35 @@ SCENARIO("World entity creation", "[EntityComponentSystem]")
 
 struct TestComponent : public World::Component
 {
-	TestComponent(World::Entity* ent) : World::Component(ent) {}
+	TestComponent(World::Entity& ent) : Component(ent) {}
 
 	bool hasExecuted = false;		// Has the system executed at least once
-	unsigned int sysExecCount = 0;	// Test system execution count
+	unsigned int sysExecCount = 0;		// Test system execution count
 };
 
-void TestSystem(TestComponent* testComp, float deltaTime)
+void TestSystem(TestComponent& testComp, float deltaTime)
 {
-	if (!testComp->hasExecuted) {
-		testComp->hasExecuted = true;
+	if (!testComp.hasExecuted) {
+		testComp.hasExecuted = true;
 	}
 	
-	testComp->sysExecCount++;
+	testComp.sysExecCount++;
 }
 
 SCENARIO("World system registration", "[EntityComponentSystem]")
 {
 	GIVEN("A world with an entity with a test component")
 	{
-		auto* _victim = World::CreateWorld();
-		auto* _victimEntity = World::CreateEntity(_victim, "testEntity");
-		auto* _victimComp = World::CreateComponent<TestComponent>(_victimEntity);
+		World::WorldAdmin _victim;
+		auto& _victimEntity = _victim.CreateEntity("testEntity");
+		auto* _victimComp = _victim.CreateComponent<TestComponent>(_victimEntity);
 		
 		WHEN("A system that acts on test components is registered")
 		{
-			World::RegisterSystem(_victim, &TestSystem);
+			_victim.RegisterSystem(&TestSystem);
 			THEN("Ticking the world changes the component")
 			{
-				World::Tick(_victim, .0f);
+				_victim.Tick(.0f);
 				REQUIRE(_victimComp->hasExecuted);
 				REQUIRE(_victimComp->sysExecCount == 1);
 			}
@@ -67,7 +71,7 @@ SCENARIO("World system registration", "[EntityComponentSystem]")
 		{
 			THEN("Ticking the world does not change the component's state")
 			{
-				World::Tick(_victim, .0f);
+				_victim.Tick(.0f);
 				REQUIRE_FALSE(_victimComp->hasExecuted);
 				REQUIRE_FALSE(_victimComp->sysExecCount);
 			}
@@ -79,35 +83,35 @@ SCENARIO("World entity and component management", "[EntityComponentSystem]")
 {
 	GIVEN("A world with an entity")
 	{
-		auto* _victim = World::CreateWorld();
-		auto* _victimEntity = World::CreateEntity(_victim, "testEntity");
+		World::WorldAdmin _victim;
+		auto& _victimEntity = _victim.CreateEntity("testEntity");
 		WHEN("A test component is created on the entity")
 		{
-			auto* _victimComponent = World::CreateComponent<TestComponent>(_victimEntity);
+			auto* _victimComponent = _victim.CreateComponent<TestComponent>(_victimEntity);
 			THEN("The world must have the same transform and test components as the entity")
 			{
-				REQUIRE(dynamic_cast<World::TransformComponent*>(_victim->components.at(0)));
-				REQUIRE(dynamic_cast<TestComponent*>(_victim->components.at(1)));
-				REQUIRE(_victim->components.at(0) == _victimEntity->components.at(0));
-				REQUIRE(_victim->components.at(1) == _victimEntity->components.at(1));
+				auto _victimEntityComps = _victimEntity.GetComponents();
+				REQUIRE(dynamic_cast<World::TransformComponent*>(&_victimEntityComps[0].get()));
+				REQUIRE(&_victimEntity.GetComponents()[0]);
+				REQUIRE(_victim.IsComponentRegistered(*_victimComponent));
+				REQUIRE(dynamic_cast<TestComponent*>(&_victimEntityComps[1].get()));
 			}
 			AND_WHEN("That component is destroyed")
 			{
-				World::DestroyComponent(_victimComponent);
+				_victim.DestroyComponent(*_victimComponent);
 				THEN("The world must only have a single transform component")
 				{
-					REQUIRE(_victim->components.size() == 1);
-					REQUIRE(dynamic_cast<World::TransformComponent*>(_victim->components.at(0)));
-					REQUIRE(_victim->components.at(0) == _victimEntity->components.at(0));
+					REQUIRE(_victim.GetNumComponents() == 1);
+					REQUIRE(_victim.IsComponentRegistered(_victimEntity.GetComponents()[0]));
 				}
 			}
 			AND_WHEN("The entity is destroyed")
 			{
-				World::DestroyEntity(_victimEntity);
+				_victim.DestroyEntity("testEntity");
 				THEN("The world must have no components nor entities")
 				{
-					REQUIRE(_victim->components.empty());
-					REQUIRE(_victim->entities.empty());
+					REQUIRE(_victim.GetNumComponents() == 0);
+					REQUIRE(_victim.GetNumEntities() == 0);
 				}
 			}
 		}

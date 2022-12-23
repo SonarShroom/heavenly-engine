@@ -24,7 +24,7 @@ Renderer::Renderer(const int viewportWidth, const int viewportHeight)
 		return;
 	}
 
-	HV_LOG_INFO("OpenGL initialized. Version: {}", glGetString(GL_VERSION));
+	HV_LOG_INFO("OpenGL initialized. Version: {}", (const char*) glGetString(GL_VERSION));
 
 	glViewport(0, 0, viewportWidth, viewportHeight);
 

@@ -141,7 +141,7 @@ if(HEAVENLY_TESTS)
 		${TESTS_DIR}/main.cpp
 		${TESTS_DIR}/world/EntityComponentSystemTests.cpp
 	)
-	target_link_libraries(${TESTS_EXE} PRIVATE ${ENGINE_LIB} Catch2)
+	target_link_libraries(${TESTS_EXE} PRIVATE ${ENGINE_LIB} Catch2WithMain)
 
 	target_compile_features(${TESTS_EXE} PRIVATE cxx_std_23)
 	set_target_properties(${TESTS_EXE} PROPERTIES CXX_STANDARD 23)
