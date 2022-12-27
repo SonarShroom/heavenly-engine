@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "HeavenlyMath.h"
+#include <glm/vec2.hpp>
 
 #include "BatchRendering.hpp"
 #include "RenderPrimitives.h"

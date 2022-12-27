@@ -4,7 +4,8 @@
 
 #include "graphics/RenderPrimitives.h"
 
-#include "HeavenlyMath.h"
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 namespace Heavenly::World
 {

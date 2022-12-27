@@ -2,12 +2,12 @@
 
 #include <chrono>
 
+#include <glm/vec2.hpp>
+
 #include "core/AppRuntime.h"
 #include "core/HeavenlyVersion.h"
 
 #include "logging/LogManager.h"
-
-#include "HeavenlyMath.h"
 
 #include "world/Component.h"
 #include "world/GUIComponents.h"

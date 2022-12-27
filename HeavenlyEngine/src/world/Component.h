@@ -1,6 +1,7 @@
 #pragma once
 
-#include "HeavenlyMath.h"
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 #include "world/Entity.h"
 

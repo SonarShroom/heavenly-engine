@@ -4,7 +4,9 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
-#include <HeavenlyMath.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "core/AppRuntime.h"
 #include "core/Engine.h"
