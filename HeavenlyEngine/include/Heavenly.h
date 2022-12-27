@@ -4,6 +4,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <HeavenlyMath.h>
+
 #include "core/AppRuntime.h"
 #include "core/Engine.h"
 

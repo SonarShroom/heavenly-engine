@@ -1,43 +1,70 @@
 #pragma once
 
-#include <concepts>
+// #include <concepts>
 
-namespace Heavenly::Math
-{
+// namespace Heavenly::Math
+// {
 
-struct Vector2
-{
-public:
-	Vector2(const float _x = 0, const float _y = 0) : x(_x), y(_y) {}
+// struct Vector2
+// {
+// public:
+// 	Vector2(const float x = 0, const float y = 0) : data {x, y} { }
 
-	float x = 0;
-	float y = 0;
-};	
+// 	operator float* () {
+// 		return data.vec;
+// 	}
 
-struct Vector3
-{
-public:
-	Vector3(const float _x = 0, const float _y = 0, const float _z = 0) : x(_x), y(_y), z(_z) {}
+// 	union {
+// 		struct Data {
+// 			float x;
+// 			float y;
+// 		};
+// 		float vec[2] = {0, 0};
+// 	} data;
+// };	
 
-	Vector3(const Vector2 _vec2, const float _z = 0) : Vector3(_vec2.x, _vec2.y, _z) {}
+// struct Vector3
+// {
+// public:
+// 	Vector3(const float x = 0, const float y = 0, const float z = 0) : data {x, y, z} {}
 
-	float x = 0;
-	float y = 0;
-	float z = 0;
-};
+// 	Vector3(const Vector2 vec2, const float z = 0) : Vector3(vec2.x, vec2.y, z) {}
 
-struct Vector4
-{
-public:
-	Vector4(const float _x = 0, const float _y = 0, const float _z = 0, const float _w = 0) : x(_x), y(_y), z(_z), w(_w) {}
+// 	operator float* () {
+// 		return data.vec;
+// 	}
 
-	Vector4(const Vector2 _vec2, const float _z = 0, const float _w = 0) : Vector4(_vec2.x, _vec2.y, _z, _w) {}
-	Vector4(const Vector3 _vec3, const float _w = 0) : Vector4(_vec3.x, _vec3.y, _vec3.z, _w) {}
+// 	union {
+// 		struct Data {
+// 			float x;
+// 			float y;
+// 			float z;
+// 		};
+// 		float vec[3] = {0, 0, 0};
+// 	} data;
+// };
 
-	float x = 0;
-	float y = 0;
-	float z = 0;
-	float w = 0;
-};
+// struct Vector4
+// {
+// public:
+// 	Vector4(const float x = 0, const float y = 0, const float z = 0, const float w = 0) : data{x, y, z, w} {}
 
-}
+// 	Vector4(const Vector2 vec2, const float z = 0, const float w = 0) : Vector4(vec2.data.x, vec2.data.y, _z, _w) {}
+// 	Vector4(const Vector3 vec3, const float w = 0) : Vector4(vec3.data.x, vec3.data.y, vec3.data.z, _w) {}
+
+// 	operator float* () {
+// 		return data.vec;
+// 	}
+
+// 	union {
+// 		struct Data {
+// 			float x;
+// 			float y;
+// 			float z;
+// 			float w;
+// 		} components;
+// 		float vec[4] = {0, 0, 0, 0};
+// 	} data;
+// };
+
+// }

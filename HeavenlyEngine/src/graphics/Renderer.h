@@ -5,7 +5,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "math/MathBaseTypes.h"
+#include "HeavenlyMath.h"
+
 #include "BatchRendering.hpp"
 #include "RenderPrimitives.h"
 
@@ -27,7 +28,7 @@ class Renderer
 {
 public:
 	Renderer(const int viewportWidth, const int viewportHeight);
-	Renderer(const Math::Vector2& viewportSize) : Renderer((int)viewportSize.x, (int)viewportSize.y) {}
+	Renderer(const glm::vec2& viewportSize) : Renderer((int)viewportSize.x, (int)viewportSize.y) {}
 	~Renderer();
 
 	void Tick(const float deltaTime);

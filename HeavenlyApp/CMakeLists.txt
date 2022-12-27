@@ -4,13 +4,16 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 add_executable(${APP_EXE}
 	${SRC_DIR}/main.cpp
-	${SRC_DIR}/app/private/editorgui.cpp
-	${SRC_DIR}/app/private/appruntime.cpp
+
+	${SRC_DIR}/app/private/Runtime.cpp
+
+	${SRC_DIR}/editor/private/GUI.cpp
 )
 
-target_include_directories(
-	${APP_EXE} PUBLIC
+target_include_directories(${APP_EXE} PUBLIC
+	${SRC_DIR}
 	${SRC_DIR}/app
+	${SRC_DIR}/editor
 )
 
 target_link_libraries(${APP_EXE} ${ENGINE_LIB})

@@ -2,7 +2,7 @@
 
 #include <Heavenly.h>
 
-#include "editorgui.h"
+#include "editor/GUI.h"
 
 namespace HeavenlyApp::App
 {
@@ -17,9 +17,9 @@ public:
 	void OnDrawImGui(const float deltaTime) override;
 
 private:
-	friend EditorGUI;
+	friend Editor::GUI;
 
-	EditorGUI editor = EditorGUI(*this);
+	Editor::GUI editor = Editor::GUI(*this);
 	Heavenly::World::WorldAdmin* mainWorld = nullptr;
 };
 

@@ -1,15 +1,15 @@
 #pragma once
 
-#include "math/MathBaseTypes.h"
+#include "HeavenlyMath.h"
 
 namespace Heavenly::Graphics
 {
 
 struct Vertex
 {
-    Math::Vector3 position;
-    Math::Vector4 color {255.f, 255.f, 255.f, 255.f};
-    Math::Vector2 uv;
+    glm::vec3 position = {0.f, 0.f, 0.f};
+    glm::vec4 color = {255.f, 255.f, 255.f, 255.f};
+    glm::vec2 uv = {0.f, 0.f};
 };
 
 struct Triangle

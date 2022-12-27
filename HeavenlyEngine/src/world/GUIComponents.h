@@ -3,7 +3,8 @@
 #include "world/Component.h"
 
 #include "graphics/RenderPrimitives.h"
-#include "math/MathBaseTypes.h"
+
+#include "HeavenlyMath.h"
 
 namespace Heavenly::World
 {
@@ -16,8 +17,8 @@ struct RectComponent : public Component
 
 	bool drawDirty = true;
 
-	Math::Vector2 size;
-	Math::Vector4 color;
+	glm::vec2 size = {0.f, 0.f};
+	glm::vec4 color = {0.f, 0.f, 0.f, 0.f};
 	Graphics::Quad quad;
 };
 

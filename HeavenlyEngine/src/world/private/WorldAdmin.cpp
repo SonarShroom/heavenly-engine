@@ -19,7 +19,7 @@ void WorldAdmin::Tick(const float deltaTime)
 	}
 }
 
-void WorldAdmin::IterateWorldEntities(void(*visitor)(Entity&))
+void WorldAdmin::IterateWorldEntities(const std::function<void(Entity&)>& visitor)
 {
 	for (auto& _ent : entities)
 	{

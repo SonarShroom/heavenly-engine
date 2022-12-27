@@ -6,15 +6,15 @@
 	path = HeavenlyEngine/thirdparty/spdlog
 	url = git@github.com:gabime/spdlog.git
 	branch = v1.x
-[submodule "HeavenlyEngine/thirdparty/fmt"]
+[submodule "fmt"]
 	path = HeavenlyEngine/thirdparty/fmt
 	url = git@github.com:fmtlib/fmt.git
-[submodule "HeavenlyEngine/thirdparty/catch2"]
+	branch = master
+[submodule "catch2"]
 	path = HeavenlyEngine/thirdparty/catch2
 	url = git@github.com:catchorg/Catch2.git
-	branch = v2.13.9
-[submodule "HeavenlyEngine/thirdparty/imgui"]
-	branch = docking
-[submodule "HeavenlyEngine/thirdparty/glm"]
+	branch = devel
+[submodule "glm"]
 	path = HeavenlyEngine/thirdparty/glm
 	url = git@github.com:g-truc/glm.git
+	branch = master

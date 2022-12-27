@@ -1,8 +1,6 @@
-#include "appruntime.h"
+#include "Runtime.h"
 
 #include <Heavenly.h>
-
-#include "editorgui.h"
 
 namespace HeavenlyApp::App
 {
@@ -11,7 +9,7 @@ void Runtime::OnBoot([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
 	mainWorld = &(engine.CreateWorld());
 	auto& _rectEntity = mainWorld->CreateEntity("rect");
-	auto* _rectTransform = mainWorld->CreateComponent<Heavenly::World::TransformComponent>(_rectEntity);
+	auto* _rectTransform = mainWorld->GetComponent<Heavenly::World::TransformComponent>(_rectEntity);
 	_rectTransform->position = { -.2f, .1f, 0.f };
 
 	auto* _rectComponent = mainWorld->CreateComponent<Heavenly::World::RectComponent>(_rectEntity);

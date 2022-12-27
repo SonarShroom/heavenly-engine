@@ -3,8 +3,12 @@ project(HeavenlyEngine
         DESCRIPTION "Heavenly Game Engine"
         LANGUAGES CXX
 )
+include(CheckIPOSupported)
 
 option(HEAVENLY_TESTS "Enables Heavenly Engine tests target.")
+
+check_ipo_supported(RESULT IPOSupported)
+message(STATUS "Compiling with IPO? ${IPOSupported}")
 
 # TODO: Once the engine part has been put into a separate repo, this work dir must be changed.
 execute_process(
@@ -52,7 +56,7 @@ target_link_libraries(imgui PRIVATE
 	glfw
 )
 
-set(GLAD_DIR thirdparty/glad)
+set(GLAD_DIR ${3RD_PARTY_DIR}/glad)
 add_library("glad" ${GLAD_DIR}/src/glad.c)
 
 set(FMT_DIR ${3RD_PARTY_DIR}/fmt)
@@ -63,6 +67,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
+set(GLFW_DIR ${3RD_PARTY_DIR}/glfw)
 add_subdirectory(
     ${3RD_PARTY_DIR}/glfw
 )
@@ -73,6 +78,11 @@ add_subdirectory(
 
 add_subdirectory(
     ${FMT_DIR}
+)
+
+set(GLM_DIR ${3RD_PARTY_DIR}/glm)
+add_subdirectory(
+    ${GLM_DIR}
 )
 
 add_library(${ENGINE_LIB}
@@ -94,7 +104,6 @@ add_library(${ENGINE_LIB}
 target_include_directories(${ENGINE_LIB} PUBLIC
     ${SRC_DIR}/core
     ${SRC_DIR}/graphics
-    ${SRC_DIR}/math
     ${SRC_DIR}/logging
     ${SRC_DIR}/resources
     ${SRC_DIR}/window_system
@@ -118,7 +127,9 @@ target_link_libraries(${ENGINE_LIB} PUBLIC
 	imgui
     glad
     glfw
-    spdlog::spdlog
+    spdlog
+    glm
+    fmt
 )
 
 target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)

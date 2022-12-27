@@ -8,15 +8,8 @@
 #include "Component.h"
 #include "Entity.h"
 
-namespace Heavenly::Core
-{
-class Engine;
-}
-
 namespace Heavenly::World
 {
-
-class Entity;
 
 class WorldAdmin
 {
@@ -32,7 +25,7 @@ public:
 
 	inline std::size_t GetNumEntities() { return entities.size(); }
 
-	void IterateWorldEntities(void(*visitor)(Entity&));
+	void IterateWorldEntities(const std::function<void(Entity&)>& visitor);
 
 	template<ComponentType ComponentT, typename ...ArgsT>
 	ComponentT* CreateComponent(Entity& entity, ArgsT&&... args) noexcept
@@ -60,7 +53,7 @@ public:
 
 			for (auto& _c : ent.GetComponents())
 			{
-				auto* _casted = dynamic_cast<ComponentT*>(&_c);
+				auto* _casted = dynamic_cast<ComponentT*>(&_c.get());
 				if (_casted) return _casted;
 			}
 		}

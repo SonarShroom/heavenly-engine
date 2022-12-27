@@ -39,7 +39,7 @@ void Terminate()
 	p_isGLFWInitialized = false;
 }
 
-Window::Window(const std::string& name, const Math::Vector2& size, const Mode& mode) : name(name), size(size), mode(mode)
+Window::Window(const std::string& name, const glm::vec2& size, const Mode& mode) : name(name), size(size), mode(mode)
 {
 	if (!p_isGLFWInitialized)
 	{

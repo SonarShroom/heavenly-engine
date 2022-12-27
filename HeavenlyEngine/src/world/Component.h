@@ -1,6 +1,7 @@
 #pragma once
 
-#include "math/MathBaseTypes.h"
+#include "HeavenlyMath.h"
+
 #include "world/Entity.h"
 
 namespace Heavenly::World
@@ -41,9 +42,9 @@ class TransformComponent final : public Component
 public:
 	TransformComponent(Entity& e) : Component(e) { }
 
-	Math::Vector3 position;
-	Math::Vector3 rotation;
-	Math::Vector3 scale;
+	glm::vec3 position = {0.f, 0.f, 0.f};
+	glm::vec3 rotation = {0.f, 0.f, 0.f};
+	glm::vec2 scale = {1.f, 1.f};
 };
 
 /*template <typename Vector_t, class Component_t>

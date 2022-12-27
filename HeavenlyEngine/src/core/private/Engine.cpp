@@ -7,6 +7,8 @@
 
 #include "logging/LogManager.h"
 
+#include "HeavenlyMath.h"
+
 #include "world/Component.h"
 #include "world/GUIComponents.h"
 #include "world/RenderingComponents.h"
@@ -25,7 +27,7 @@ Engine::Engine(int argc, char** argv, std::unique_ptr<IAppRuntime>&& appRuntime)
 	}
 	
 	using WindowModeT = WindowSystem::Window::Mode;
-	mainWindow = std::make_unique<WindowSystem::Window>("Heavenly Game Engine", Math::Vector2(1280, 720), WindowModeT::WINDOWED);
+	mainWindow = std::make_unique<WindowSystem::Window>("Heavenly Game Engine", glm::vec2(1280.f, 720.f), WindowModeT::WINDOWED);
 	if (!mainWindow->IsWindowCreated())
 	{
 		state = State::ErrorOnBoot;
@@ -73,7 +75,7 @@ int Engine::Run()
 			_world.Tick(deltaTime);
 
 		renderer->Tick(deltaTime);
-		//GUI::ShowDevGui(deltaTime);
+		guiManager->RenderGUI(deltaTime);
 
 		mainWindow->SwapBuffers();
 		mainWindow->PollEvents();
