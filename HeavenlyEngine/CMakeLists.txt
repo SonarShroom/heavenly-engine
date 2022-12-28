@@ -1,7 +1,7 @@
 project(HeavenlyEngine
-        VERSION 0.0.0
-        DESCRIPTION "Heavenly Game Engine"
-        LANGUAGES CXX
+		VERSION 0.0.0
+		DESCRIPTION "Heavenly Game Engine"
+		LANGUAGES CXX
 )
 include(CheckIPOSupported)
 
@@ -12,12 +12,12 @@ message(STATUS "Compiling with IPO? ${IPOSupported}")
 
 # TODO: Once the engine part has been put into a separate repo, this work dir must be changed.
 execute_process(
-    COMMAND
-        git rev-parse --short HEAD
-    OUTPUT_VARIABLE
-        HeavenlyEngine_REVISION
-    WORKING_DIRECTORY
-        ${CMAKE_SOURCE_DIR}
+	COMMAND
+		git rev-parse --short HEAD
+	OUTPUT_VARIABLE
+		HeavenlyEngine_REVISION
+	WORKING_DIRECTORY
+		${CMAKE_SOURCE_DIR}
 )
 string(REGEX REPLACE "\n" "" HeavenlyEngine_REVISION "${HeavenlyEngine_REVISION}")
 message(STATUS "Heavenly Engine Version: " ${HeavenlyEngine_VERSION} "-" ${HeavenlyEngine_REVISION})
@@ -32,19 +32,19 @@ set(IMGUI_DIR ${3RD_PARTY_DIR}/imgui)
 
 add_library(imgui STATIC
 	${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_draw.cpp
+	${IMGUI_DIR}/imgui_draw.cpp
 	${IMGUI_DIR}/imgui_widgets.cpp
 	${IMGUI_DIR}/imgui_demo.cpp
 	${IMGUI_DIR}/imgui_tables.cpp
 
-    # included while we use some imgui helper functions
+	# included while we use some imgui helper functions
 	${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
 	${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(imgui PUBLIC
-    ${IMGUI_DIR}
-    ${IMGUI_DIR}/backends
+	${IMGUI_DIR}
+	${IMGUI_DIR}/backends
 )
 
 target_compile_definitions(imgui PUBLIC
@@ -69,67 +69,69 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 set(GLFW_DIR ${3RD_PARTY_DIR}/glfw)
 add_subdirectory(
-    ${3RD_PARTY_DIR}/glfw
+	${3RD_PARTY_DIR}/glfw
 )
 
 add_subdirectory(
-    ${SPDLOG_DIR}
+	${SPDLOG_DIR}
 )
 
 add_subdirectory(
-    ${FMT_DIR}
+	${FMT_DIR}
 )
 
 set(GLM_DIR ${3RD_PARTY_DIR}/glm)
 add_subdirectory(
-    ${GLM_DIR}
+	${GLM_DIR}
 )
 
+target_compile_definitions(glm INTERFACE GLM_FORCE_SILENT_WARNINGS)
+
 add_library(${ENGINE_LIB}
-    ${SRC_DIR}/core/private/Engine.cpp
+	${SRC_DIR}/core/private/Engine.cpp
 
-    ${SRC_DIR}/graphics/private/GUIManager.cpp
-    ${SRC_DIR}/graphics/private/Renderer.cpp
+	${SRC_DIR}/graphics/private/GUIManager.cpp
+	${SRC_DIR}/graphics/private/Renderer.cpp
 
-    ${SRC_DIR}/logging/private/LogManager.cpp
+	${SRC_DIR}/logging/private/LogManager.cpp
 
-    ${SRC_DIR}/resources/private/Shader.cpp
+	${SRC_DIR}/resources/private/Shader.cpp
 
-    ${SRC_DIR}/window_system/private/Window.cpp
+	${SRC_DIR}/window_system/private/Window.cpp
 
-    ${SRC_DIR}/world/private/Entity.cpp
-    ${SRC_DIR}/world/private/WorldAdmin.cpp
+	${SRC_DIR}/world/private/Entity.cpp
+	${SRC_DIR}/world/private/WorldAdmin.cpp
 )
 
 target_include_directories(${ENGINE_LIB} PUBLIC
-    ${SRC_DIR}/core
-    ${SRC_DIR}/graphics
-    ${SRC_DIR}/logging
-    ${SRC_DIR}/resources
-    ${SRC_DIR}/window_system
+	${SRC_DIR}/core
+	${SRC_DIR}/graphics
+	${SRC_DIR}/logging
+	${SRC_DIR}/resources
+	${SRC_DIR}/window_system
 	${SRC_DIR}/world
 
-    ${GLAD_DIR}/include
+	${GLAD_DIR}/include
 )
 
 configure_file(
-    ${SRC_DIR}/core/HeavenlyVersion.h.in
-    ${SRC_DIR}/core/HeavenlyVersion.h
+	${SRC_DIR}/core/HeavenlyVersion.h.in
+	${SRC_DIR}/core/HeavenlyVersion.h
 )
 
 target_include_directories(${ENGINE_LIB} PUBLIC ${ENGINE_DIR}/include ${ENGINE_DIR}/src)
 
 if(NOT TARGET spdlog)
-    find_package(spdlog REQUIRED)
+	find_package(spdlog REQUIRED)
 endif()
 
 target_link_libraries(${ENGINE_LIB} PUBLIC
 	imgui
-    glad
-    glfw
-    spdlog
-    glm
-    fmt
+	glad
+	glfw
+	spdlog
+	glm
+	fmt
 )
 
 target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)

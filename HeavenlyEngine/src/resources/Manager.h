@@ -11,7 +11,7 @@ namespace Heavenly::Resources
 
 class Manager {
 public:
-	using UUIDType = decltype(IResource::UUID);
+	using UUIDType = IResource::UUIDType;
 
 	template <class ResourceT, typename ...ArgsT>
 	requires std::is_base_of_v<IResource, ResourceT>
