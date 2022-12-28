@@ -11,7 +11,6 @@ class IComponentInspector
 {
 public:
 	virtual ~IComponentInspector() = default;
-	constexpr virtual std::string_view GetInspectorIcon() = 0;
 	constexpr virtual std::string_view GetInspectorTitle() = 0;
 	virtual void InspectComponent() = 0;
 };

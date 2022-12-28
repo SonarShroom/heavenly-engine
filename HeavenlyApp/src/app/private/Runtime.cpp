@@ -1,5 +1,6 @@
 #include "Runtime.h"
 
+#include <IconsFontAwesome6.h>
 #include <Heavenly.h>
 
 namespace HeavenlyApp::App
@@ -7,6 +8,13 @@ namespace HeavenlyApp::App
 
 void Runtime::OnBoot([[maybe_unused]] int argc, [[maybe_unused]] char** argv)
 {
+	static constexpr ImWchar _fontAwesomeRange[] = {ICON_MIN_FA, ICON_MAX_16_FA, 0};
+	std::filesystem::path _fontAwesomeRegularPath =
+		std::filesystem::current_path() / "assets" / "fonts" / FONT_ICON_FILE_NAME_FAR;
+	std::filesystem::path _fontAwesomeSolidPath =
+		std::filesystem::current_path() / "assets" / "fonts" / FONT_ICON_FILE_NAME_FAS;
+	engine.GetGUIManager().MergeFont(_fontAwesomeRegularPath, _fontAwesomeRange);
+	engine.GetGUIManager().MergeFont(_fontAwesomeSolidPath, _fontAwesomeRange);
 	mainWorld = &(engine.CreateWorld());
 	auto& _rectEntity = mainWorld->CreateEntity("rect");
 	auto* _rectTransform = mainWorld->GetComponent<Heavenly::World::TransformComponent>(_rectEntity);

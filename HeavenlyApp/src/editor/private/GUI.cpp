@@ -2,6 +2,8 @@
 
 #include <Heavenly.h>
 
+#include <IconsFontAwesome6.h>
+
 #include "app/Runtime.h"
 
 #include "MaterialInspector.hpp"
@@ -43,7 +45,7 @@ void GUI::ShowMainMenuBar()
 
 void GUI::ShowSceneExplorer()
 {
-	if (ImGui::Begin( "Scene Tree", &showSceneExplorer))
+	if (ImGui::Begin(ICON_FA_GLOBE " Scene Tree", &showSceneExplorer))
 	{
 		runtime.mainWorld->IterateWorldEntities([&](Heavenly::World::Entity& e) -> void {
 			if (ImGui::TreeNode(e.GetID().data()))
@@ -65,7 +67,7 @@ void GUI::ShowSceneExplorer()
 
 void GUI::ShowInspector()
 {
-	if (ImGui::Begin("Inspector"))
+	if (ImGui::Begin(ICON_FA_MAGNIFYING_GLASS " Inspector"))
 	{
 		for (auto& _inspector : componentInspectors)
 		{

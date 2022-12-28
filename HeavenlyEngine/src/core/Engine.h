@@ -35,6 +35,9 @@ public:
 	inline Graphics::Renderer& GetRenderer() const { return *renderer; }
 
 	[[nodiscard]]
+	inline Graphics::GUIManager& GetGUIManager() const { return *guiManager; }
+
+	[[nodiscard]]
 	inline Resources::Manager& GetResourceManager() { return manager; }
 
 	World::WorldAdmin& CreateWorld();

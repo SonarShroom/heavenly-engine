@@ -1,8 +1,8 @@
 #include "GUIManager.h"
 
-#include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <IconsFontAwesome6.h>
 
 #include "logging/LogManager.h"
 #include "window_system/Window.h"
@@ -30,8 +30,9 @@ GUIManager::GUIManager(const WindowSystem::Window& window)
 	ImGui_ImplGlfw_InitForOpenGL(window.GetContext(), true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-	ImGuiIO& _io = ImGui::GetIO();
-	_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	imGuiIO = &ImGui::GetIO();
+	imGuiIO->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	imGuiIO->Fonts->AddFontDefault();
 }
 
 GUIManager::~GUIManager()
@@ -40,6 +41,14 @@ GUIManager::~GUIManager()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+}
+
+void GUIManager::MergeFont(const std::filesystem::path& path, const ImWchar* range, const float size)
+{
+	static ImFontConfig _fontAwesomeConfig;
+	_fontAwesomeConfig.MergeMode = true;
+	_fontAwesomeConfig.PixelSnapH = true;
+	imGuiIO->Fonts->AddFontFromFileTTF(path.c_str(), size, &_fontAwesomeConfig, range);
 }
 
 void GUIManager::RegisterImGUIRenderFunction(const std::function<void(const float)>& renderFunction)

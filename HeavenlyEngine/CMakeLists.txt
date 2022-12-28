@@ -27,6 +27,9 @@ set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 
 set(SPDLOG_DIR ${3RD_PARTY_DIR}/spdlog)
 include_directories(${SPDLOG_DIR}/include/spdlog)
+add_subdirectory(
+	${SPDLOG_DIR}
+)
 
 set(IMGUI_DIR ${3RD_PARTY_DIR}/imgui)
 
@@ -57,27 +60,23 @@ target_link_libraries(imgui PRIVATE
 )
 
 set(GLAD_DIR ${3RD_PARTY_DIR}/glad)
-add_library("glad" ${GLAD_DIR}/src/glad.c)
-
-set(FMT_DIR ${3RD_PARTY_DIR}/fmt)
+add_library(glad ${GLAD_DIR}/src/glad.c)
 
 target_include_directories("glad" PRIVATE ${GLAD_DIR}/include)
+
+set(FMT_DIR ${3RD_PARTY_DIR}/fmt)
+add_subdirectory(
+	${FMT_DIR}
+)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 
 set(GLFW_DIR ${3RD_PARTY_DIR}/glfw)
 add_subdirectory(
 	${3RD_PARTY_DIR}/glfw
-)
-
-add_subdirectory(
-	${SPDLOG_DIR}
-)
-
-add_subdirectory(
-	${FMT_DIR}
 )
 
 set(GLM_DIR ${3RD_PARTY_DIR}/glm)
@@ -86,6 +85,8 @@ add_subdirectory(
 )
 
 target_compile_definitions(glm INTERFACE GLM_FORCE_SILENT_WARNINGS)
+
+
 
 add_library(${ENGINE_LIB}
 	${SRC_DIR}/core/private/Engine.cpp
@@ -132,6 +133,7 @@ target_link_libraries(${ENGINE_LIB} PUBLIC
 	spdlog
 	glm
 	fmt
+	icon-fonts
 )
 
 target_compile_features(${ENGINE_LIB} PRIVATE cxx_std_20)

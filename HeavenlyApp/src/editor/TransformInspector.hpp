@@ -2,6 +2,8 @@
 
 #include "ComponentInspector.h"
 
+#include <IconsFontAwesome6.h>
+
 namespace HeavenlyApp::Editor
 {
 
@@ -10,8 +12,7 @@ class TransformInspector final : public IComponentInspector
 	using CompT = Heavenly::World::TransformComponent&;
 public:
 	TransformInspector(CompT comp) : inspectedComponent(comp) { }
-	constexpr std::string_view GetInspectorIcon() { return ""; }
-	constexpr std::string_view GetInspectorTitle() final { return "Transform"; }
+	constexpr std::string_view GetInspectorTitle() final { return ICON_FA_STREET_VIEW " Transform"; }
 	void InspectComponent()
 	{
 		ImGui::TextUnformatted("Position: ");

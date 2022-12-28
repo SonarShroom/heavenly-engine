@@ -2,6 +2,8 @@
 
 #include "ComponentInspector.h"
 
+#include <IconsFontAwesome6.h>
+
 namespace HeavenlyApp::Editor
 {
 
@@ -10,8 +12,7 @@ class RectInspector final : public IComponentInspector
 	using CompT = Heavenly::World::RectComponent&;
 public:
 	RectInspector(CompT comp) : inspectedComponent(comp) { }
-	constexpr std::string_view GetInspectorIcon() { return ""; }
-	constexpr std::string_view GetInspectorTitle() final { return "Rect Renderer"; }
+	constexpr std::string_view GetInspectorTitle() final { return ICON_FA_VECTOR_SQUARE " Rect Renderer"; }
 	void InspectComponent()
 	{
 		ImGui::TextUnformatted("Size: ");
