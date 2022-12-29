@@ -86,8 +86,6 @@ add_subdirectory(
 
 target_compile_definitions(glm INTERFACE GLM_FORCE_SILENT_WARNINGS)
 
-
-
 add_library(${ENGINE_LIB}
 	${SRC_DIR}/core/private/Engine.cpp
 

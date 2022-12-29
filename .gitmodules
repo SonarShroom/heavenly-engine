@@ -22,3 +22,6 @@
 	path = HeavenlyApp/thirdparty/icon-fonts
 	url = git@github.com:juliettef/IconFontCppHeaders.git
 	branch = master
+[submodule "glfw"]
+	path = HeavenlyEngine/thirdparty/glfw
+	url = git@github.com:glfw/glfw.git
