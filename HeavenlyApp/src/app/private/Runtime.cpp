@@ -57,9 +57,8 @@ void Runtime::OnUpdate([[maybe_unused]] const float deltaTime)
 void Runtime::OnDrawImGui([[maybe_unused]] const float deltaTime)
 {
 	//ImGui::ShowDemoWindow();
-	editor.ShowMainMenuBar();
-	editor.ShowSceneExplorer();
-	editor.ShowInspector();
+	editor.DrawMenuBar();
+	editor.DrawScopes();
 }
 
 }

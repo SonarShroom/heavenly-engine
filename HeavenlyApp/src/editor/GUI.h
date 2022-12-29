@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <memory>
 #include <string_view>
@@ -10,7 +11,9 @@
 
 #include <Heavenly.h>
 
-#include "ComponentInspector.h"
+#include "EditorScope.hpp"
+#include "EntityInspector.h"
+#include "WorldExplorer.h"
 
 namespace HeavenlyApp::App
 {
@@ -20,63 +23,24 @@ class Runtime;
 namespace HeavenlyApp::Editor
 {
 
-class IAppWindow {
-public:
-	
-	constexpr IAppWindow(const std::string_view& title) : title(title) {}
-
-	virtual void Draw() = 0;
-	
-	const std::string_view& GetTitle() const {
-		return title;
-	}
-
-	bool IsOpen() const {
-		return isOpen;
-	}
-
-private:
-
-	const std::string_view title;
-	bool isOpen = true;
-};
-
-class IAppScope {
-public:
-	IAppScope();
-
-private:
-
-};
-
 class GUI
 {
 public:
-	GUI(App::Runtime& runtime) ;
+	GUI(App::Runtime& runtime);
 
-	void ShowMainMenuBar();
+	void DrawMenuBar();
 
-	void ShowSceneExplorer();
-
-	void ShowInspector();
-
-	template <Heavenly::World::ComponentType C, InspectorType I>
-	void RegisterInspector() {
-		inspectorFactory[typeid(C&)] = [](Heavenly::World::Component& comp) {
-			return std::unique_ptr<IComponentInspector>(new I(dynamic_cast<C&>(comp)));
-		};
-	}
+	void DrawScopes();
 
 private:
 	App::Runtime& runtime;
 
 	bool showSceneExplorer = true;
 	Heavenly::World::Entity* selectedEntity = nullptr;
-	std::vector<std::unique_ptr<IComponentInspector>> componentInspectors;
-	std::unordered_map<
-		std::type_index,
-		std::function<std::unique_ptr<IComponentInspector>(Heavenly::World::Component&)>
-	> inspectorFactory;
+	
+	EntityInspector entityInspector;
+	WorldExplorer worldExplorer = WorldExplorer(runtime, entityInspector);
+	std::array<IEditorScope*, 2> scopes = {&entityInspector, &worldExplorer};
 };
 
 }

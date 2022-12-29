@@ -18,6 +18,11 @@ add_executable(${APP_EXE}
 	${SRC_DIR}/app/private/Runtime.cpp
 
 	${SRC_DIR}/editor/private/GUI.cpp
+	${SRC_DIR}/editor/private/MaterialInspector.hpp
+	${SRC_DIR}/editor/private/RenderPrimitiveInspector.hpp
+	${SRC_DIR}/editor/private/TransformInspector.hpp
+	${SRC_DIR}/editor/private/EntityInspector.cpp
+	${SRC_DIR}/editor/private/WorldExplorer.cpp
 )
 
 target_include_directories(${APP_EXE} PUBLIC

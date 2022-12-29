@@ -17,7 +17,7 @@ public:
 	void OnDrawImGui(const float deltaTime) override;
 
 private:
-	friend Editor::GUI;
+	friend class Editor::WorldExplorer;
 
 	Editor::GUI editor = Editor::GUI(*this);
 	Heavenly::World::WorldAdmin* mainWorld = nullptr;
