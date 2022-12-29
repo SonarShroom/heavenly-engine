@@ -27,6 +27,7 @@ Renderer::Renderer(const int viewportWidth, const int viewportHeight)
 	HV_LOG_INFO("OpenGL initialized. Version: {}", (const char*) glGetString(GL_VERSION));
 
 	glViewport(0, 0, viewportWidth, viewportHeight);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -148,6 +149,7 @@ void Renderer::Tick([[maybe_unused]] const float deltaTime)
 
 	delete[] _vertexData;
 	delete[] _elements;
+	renderCommands.clear();
 }
 
 void Renderer::RectRendererSystem(World::RectComponent& rectComponent, [[maybe_unused]] const float timeDelta)

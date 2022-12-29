@@ -32,7 +32,11 @@ GUIManager::GUIManager(const WindowSystem::Window& window)
 
 	imGuiIO = &ImGui::GetIO();
 	imGuiIO->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	imGuiIO->Fonts->AddFontDefault();
+	ImFontConfig _defaultFontCfg;
+	_defaultFontCfg.OversampleH = _defaultFontCfg.OversampleV = 1;
+	_defaultFontCfg.PixelSnapH = true;
+	_defaultFontCfg.SizePixels = DEFAULT_FONT_SIZE;
+	imGuiIO->Fonts->AddFontDefault(&_defaultFontCfg);
 }
 
 GUIManager::~GUIManager()
